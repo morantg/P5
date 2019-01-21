@@ -137,7 +137,25 @@ function reset_password()
 	require 'view/reset_view.php';
 }
 
+function listPosts()
+{
+    $db = DBFactory::getMysqlConnexionWithPDO();
+    $postManager = new PostManager($db); 
+    $posts = $postManager->getPosts();  
 
+    require('view/listPostsView.php');
+}
+
+function post()
+{
+    $db = DBFactory::getMysqlConnexionWithPDO();
+    $postManager = new PostManager($db);
+    
+
+    $post = $postManager->getPost($_GET['id']);
+    
+	require('view/PostView.php');
+}
 
 
 

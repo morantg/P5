@@ -33,8 +33,10 @@
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <?php if(isset($_SESSION['auth'])): ?>
+              <li><a href="index.php?action=listPosts">Posts</a></li>
               <li><a href="index.php?action=logout">deco</a></li>
             <?php else: ?>
+            <li><a href="index.php?action=listPosts">Posts</a></li>
             <li><a href="index.php?action=register">S'inscrire</a></li>
             <li><a href="index.php?action=login">Se connecter</a></li>
           <?php endif; ?>
