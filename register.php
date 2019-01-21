@@ -1,4 +1,5 @@
 <?php
+
 require_once 'inc/functions.php';
 session_start();
 
@@ -49,7 +50,7 @@ if(!empty($_POST)){
 
 	$user_id = $pdo->lastInsertId();
 
-	mail($_POST['email'], "confirmation compte","afin de valider votre compte merci de cliquer sur ce lien\n\nhttp://localhost/Comptes/confirm.php?id=$user_id&token=$token");
+	mail($_POST['email'], "confirmation compte","afin de valider votre compte merci de cliquer sur ce lien\n\nhttp://localhost/p5_blog/Comptes/confirm.php?id=$user_id&token=$token");
 	$_SESSION['flash']['success'] = 'email envoyé';
 	header('Location: login.php');
 	exit();
