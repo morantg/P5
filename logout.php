@@ -1,9 +1,8 @@
 <?php 
 
-session_start();
-setcookie('remember', NULL,-1);
-unset($_SESSION['auth']);
+require 'inc/bootstrap.php';
+App::getAuth()->logout();
+Session::getInstance()->setFlash('success','vous etes deco');
 
-$_SESSION['flash']['success'] = 'vous etes deco';
 
-header('Location: login.php');
+App::redirect('login.php');

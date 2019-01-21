@@ -1,8 +1,12 @@
 <?php 
 
 
-require 'inc/functions.php';
-logged_only();
+require 'inc/bootstrap.php';
+
+App::getAuth()->restrict();
+$db = DBFactory::getMysqlConnexionWithPDO();
+
+
 if(!empty($_POST)){
 	if(empty($_POST['password']) || $_POST['password'] != $_POST['password_confirm']){
 		$_SESSION['flash']['danger'] = "les mdp ne corresponde pas";
@@ -10,8 +14,7 @@ if(!empty($_POST)){
 	}else{
 		$user_id = $_SESSION['auth']->id;
 		$password= password_hash($_POST['password'],PASSWORD_BCRYPT);
-		require_once 'inc/db.php';
-		$pdo->prepare('UPDATE users SET password = ?')->execute([$password]);
+		$db->prepare('UPDATE users SET password = ?')->execute([$password]);
 		$_SESSION['flash']['success'] = "mdp mis a jour";
 		
 	}

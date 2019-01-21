@@ -1,12 +1,3 @@
-<?php
-
-if(session_status() == PHP_SESSION_NONE){
-
-  session_start();
-}
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -54,8 +45,10 @@ if(session_status() == PHP_SESSION_NONE){
 
     <div class="container">
         <?php 
-        if( isset( $_SESSION['flash'] ) ) {
-            foreach($_SESSION['flash'] as $type => $message) {
+
+       
+        if( Session::getInstance()->hasFlashes()) {
+            foreach(Session::getInstance()->getFlashes() as $type => $message) {
                 echo "<br /><div class=\"alert alert-$type\"> $message </div>";
             }
             unset($_SESSION['flash']);

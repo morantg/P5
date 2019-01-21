@@ -1,60 +1,52 @@
 <?php
 
-require_once 'inc/functions.php';
-session_start();
+require_once 'inc/bootstrap.php';
+
+
+
+
+$db = DBFactory::getMysqlConnexionWithPDO();
+
+$user = $db ->query('SELECT * from users ')->fetchAll();
+
 
 if(!empty($_POST)){
 	$errors = array();
-	require_once 'inc/db.php';
 
-	if(empty($_POST['username']) || !preg_match('/^[a-zA-Z0-9_]+$/', $_POST['username'])){
-		$errors['username'] = "votre pseudo n'est pas valide(alphanumérique)";
-	} else{
-		$req = $pdo->prepare('SELECT id FROM users WHERE username = ?');
-		$req->execute([$_POST['username']]);
-		$user = $req->fetch();
-		if($user){
-			$errors['username'] = 'Ce pseudo est déjà pris';
-		}
+	$validator = new validator($_POST);
+	$validator->isAlpha('username',"Votre pseudo n'est pas valide (alphanumérique)");
+	
+	if($validator->isValid()){
 
+		$validator->isUniq('username', $db,'users','Ce pseudo est pris');
 	}
+	
+	$validator->isEmail('email',"email non valide");
+	
+	if($validator->isValid()){
+	$validator->isUniq('email', $db,'users','Ce mail est déjà pris');
 
-	if(empty($_POST['email']) || !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) ){
-		$errors['email'] = "email non valide";
+}
+	$validator->isConfirmed('password','vous devez rentrer un mdp valide');
+
+
+	
+	if($validator->isValid()){
+	
+
+	
+
+	App::getAuth()->register($db,$_POST['username'],$_POST['password'],$_POST['email']);
+
+	
+
+	Session::getInstance()->setFlash('success','email de confirmation envoyé');
+
+    App::redirect('login.php');
+	
 	}else{
-		$req = $pdo->prepare('SELECT id FROM users WHERE email = ?');
-		$req->execute([$_POST['email']]);
-		$user = $req->fetch();
-		if($user){
-			$errors['email'] = 'Ce mail est déjà pris';
-		}
-	}	
 
-
-	if(empty($_POST['password']) || $_POST['password']!= $_POST['password_confirm']){
-		$errors['password'] = "vous devez rentrer un mdp valide";
-	}
-
-	
-	if(empty($errors)){
-	require_once 'inc/db.php';
-
-	$req=$pdo->prepare ("INSERT INTO users SET username = ?,password = ?,email = ?, confirmation_token = ?");
-
-	$password = password_hash($_POST['password'], PASSWORD_BCRYPT);
-
-	$token = str_random(60);
-
-
-	$req->execute([$_POST['username'],$password, $_POST['email'],$token]);
-
-	$user_id = $pdo->lastInsertId();
-
-	mail($_POST['email'], "confirmation compte","afin de valider votre compte merci de cliquer sur ce lien\n\nhttp://localhost/p5_blog/Comptes/confirm.php?id=$user_id&token=$token");
-	$_SESSION['flash']['success'] = 'email envoyé';
-	header('Location: login.php');
-	exit();
-	
+		$errors = $validator->getErrors(); 
 	}
 
 	
