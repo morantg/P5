@@ -16,5 +16,28 @@ $title = htmlspecialchars($post->titre); ?>
     </p>
 </div>
 
+<h2>Commentaires</h2>
+<?php if(isset($_SESSION['auth'])): ?>    
 
-<?php require 'inc/footer.php'; ?>
+<form action="index.php?action=addComment&amp;id=<?= $post->id ?>" method="POST">
+    <div>
+        <label for="author">Auteur</label><br />
+        <input type="text" id="author" name="author" class="form-control" />
+    </div>
+    <div>
+        <label for="comment">Commentaire</label><br />
+        <textarea id="comment" name="comment" class="form-control"></textarea>
+    </div>
+    <br>
+        <button type="submit" class="btn btn-primary">Poster</button>
+</form>
+<br>
+<?php endif; 
+while ($comment = $comments->fetch(PDO::FETCH_ASSOC))
+{
+?>
+    <p><strong><?= htmlspecialchars($comment['author']) ?></strong> le <?= $comment['comment_date_fr'] ?></p>
+    <p><?= nl2br(htmlspecialchars($comment['comment'])) ?></p>
+<?php
+}
+require 'inc/footer.php'; ?>
