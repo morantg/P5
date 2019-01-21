@@ -1,0 +1,12 @@
+{
+    "name": "georges/p5_test",
+    "authors": [
+        {
+            "name": "morantg",
+            "email": "morantgeorges02@gmail.com"
+        }
+    ],
+    "require": {
+        "twig/twig": "~1.0"
+    }
+}
