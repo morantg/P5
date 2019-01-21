@@ -2,55 +2,63 @@
 require('controller/frontend.php');
 //require 'inc/bootstrap.php';
 
+// Routing  
+try{
+    if (isset($_GET['action'])) {
 
-// Routing	
-if (isset($_GET['action'])) {
- 
- 	if ($_GET['action'] == 'register') {
-           register();
-        }elseif($_GET['action'] == 'login'){
-        	login();
-        }elseif($_GET['action'] == 'logout'){
-        	logout();
-        }elseif ($_GET['action'] == 'confirm') {
-        	confirm();
-        }elseif($_GET['action'] == 'account'){
-        	account();
-        }elseif ($_GET['action'] == 'forget') {
-        	forget();
-        }elseif ($_GET['action'] == 'reset_password') {
-            reset_password();
-        }elseif($_GET['action'] == 'editPosts'){
-            edition();
-        }
-    }else{
-        	listPosts();
-    }
-
-
- if (isset($_GET['action'])) {
-        if ($_GET['action'] == 'listPosts') {
-            listPosts();
-        }
-        elseif ($_GET['action'] == 'post') {
-            if (isset($_GET['id']) && $_GET['id'] > 0) {
-                post();
-            }
-            else {
-                throw new Exception('Aucun identifiant de billet envoyé');
-            }
-        }
-        elseif ($_GET['action'] == 'addComment') {
-            if (isset($_GET['id']) && $_GET['id'] > 0) {
-                if (!empty($_POST['author']) && !empty($_POST['comment'])) {
+        switch ($_GET['action']) {
+            case 'register':
+                register();
+                break;
+            case 'login':
+                login();
+                break;
+            case 'logout':
+                logout();
+                break;
+            case 'confirm':
+                confirm();
+                break;
+            case 'account':
+                account();
+                break;
+            case 'forget':
+                forget();
+                break;
+            case 'reset_password':
+                reset_password();
+                break;
+            case 'editPosts':
+                edition();
+                break;
+            case 'listPosts':
+                listPosts();
+                break;
+            case 'post':
+                if (isset($_GET['id']) && $_GET['id'] > 0) {
+                    post();
+                }
+                else {
+                    throw new Exception('Aucun identifiant de billet envoyé');
+                }
+                break;
+            case 'addComment':
+                if (isset($_GET['id']) && $_GET['id'] > 0) {
                     addComment($_GET['id'], $_POST['author'], $_POST['comment']);
                 }
                 else {
-                    throw new Exception('Tous les champs ne sont pas remplis !');
+                    throw new Exception('Aucun identifiant de billet envoyé');
                 }
-            }
-            else {
-                throw new Exception('Aucun identifiant de billet envoyé');
-            }
+                break;  
+            default:
+                listPosts();
+                break;
         }
-    }    
+    }else{
+            listPosts();
+        }
+}
+
+catch(Exception $e) {
+    echo 'Erreur : ' . $e->getMessage();
+}

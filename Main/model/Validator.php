@@ -58,10 +58,24 @@ class Validator{
 		$req->execute([$user_id]);
 		$user= $req->fetch();
 		
-		if($user->permission == 'admin'){
-			return true;
+		if($user->permission == 'admin' || $user->permission == 'superadmin'){
+			$auth = App::getAuth();
+			return $_SESSION['admin'] = true;
 		}else{
-			return false;
+			return $_SESSION['admin'] = false;
+		}
+	}
+
+	public static function isSuperAdmin($db,$user_id){
+		$req = $db->prepare('SELECT permission FROM users WHERE id = ?');
+		$req->execute([$user_id]);
+		$user= $req->fetch();
+		
+		if($user->permission == 'superadmin'){
+			$auth = App::getAuth();
+			return $_SESSION['superadmin'] = true;
+		}else{
+			return $_SESSION['superadmin'] = false;
 		}
 	}
 }

@@ -22,7 +22,7 @@ class Auth{
 		$req->execute([$username,$password, $email,$token]);
 		$user_id = $db->lastInsertId();
 
-		mail($email, "confirmation compte","afin de valider votre compte merci de cliquer sur ce lien\n\nhttp://localhost/p5_test/Comptes/index.php?action=confirm&id=$user_id&token=$token");
+		mail($email, "confirmation compte","afin de valider votre compte merci de cliquer sur ce lien\n\nhttp://http://localhost/Openclassrooms/Projet/p5_test/Main/index.php?action=confirm&id=$user_id&token=$token");
 	}
 
 	public function confirm($db,$user_id,$token){
@@ -53,6 +53,14 @@ class Auth{
 			$this->session->setFlash('danger',$this->options['restriction_msg']);
 			App::redirect('index.php?action=listPosts');
 		}
+
+		return $admin;
+	}
+
+	public function restrict_superadmin($db){
+		
+		$admin = Validator::isSuperAdmin($db,$_SESSION['auth']->id);
+		return $admin;
 	}
 
 
@@ -61,6 +69,12 @@ class Auth{
 			return false;
 		}
 		return $this->session->read('auth');
+	}
+
+	public function users($db){
+		$req = $db ->query("SELECT * from users WHERE permission != 'superadmin'");
+		$users = $req->fetchAll();
+		return $users;
 	}
 
 	public function connect ($user){
@@ -109,6 +123,11 @@ class Auth{
 		}
 	}
 
+	public function changer_permission($db,$permission,$id){
+		$req = $db->prepare('UPDATE users SET permission = ? WHERE id = ? ');
+		$req->execute([$permission, $id]);
+	}
+
 	public function remember($db,$user_id){
 		$remember_token = App::random(250);
 		$req = $db->prepare('UPDATE  users SET remember_token = ? WHERE id = ?');
@@ -130,10 +149,15 @@ class Auth{
 			$req = $db->prepare('UPDATE users SET reset_token = ?, reset_at = NOW() WHERE id = ?');
 			$req->execute([$reset_token,$user->id]);
 						
-			mail($_POST['email'], "réinitialisation de votre mot de passe ","afin de réinitialiser votre mot de passe merci de cliquer sur ce lien\n\nhttp://localhost/p5_test/Comptes/index.php?action=reset_password&id={$user->id}&token=$reset_token");
+			mail($_POST['email'], "réinitialisation de votre mot de passe ","afin de réinitialiser votre mot de passe merci de cliquer sur ce lien\n\nhttp://http://localhost/Openclassrooms/Projet/p5_test/Main/index.php?action=reset_password&id={$user->id}&token=$reset_token");
 			return $user;
 		}
 		return false;
+	}
+
+	public function confirmReset($password,$id,$db){
+		$req = $db->prepare('UPDATE users SET password = ?, reset_at = NULL, reset_token = NULL WHERE id = ?');
+		$req->execute([$password,$id]);
 	}
 	
 	public function checkResetToken($db,$user_id,$token){

@@ -2,22 +2,30 @@
 
 {% block content %}
 
-<h1>Mon super blog !</h1>
-<h4>Derniers billets du blog :</h4>
-
-
+<div class="row">
+    <div class="col-lg-8 col-md-10 mx-auto">    
 {% for data in post %}
-    <div class="news">
-        <h3>
-            {{ data.titre }}
-            <em>le {{ data.creation_date_fr }}</em>
-        </h3>
-        <p>
-            {{ data.contenu }}
-            <br />
-            <em><a href="index.php?action=post&amp;id={{ data.id }}">Commentaires</a></em>
+    <div class="post-preview">
+        <a href="index.php?action=post&amp;id={{ data.id }}">
+            <h2 class="post-title">
+                {{ data.titre }}
+            </h2>
+            <h3 class="post-subtitle">
+                {{ data.contenu | raw }}
+            </h3>    
+        </a>
+        <p class="post-meta">Publié par
+            <a href="#">{{ data.auteur }}</a>
+            le {{ data.dateAjout.format('d/m/Y à H:i') }}
         </p>
     </div>
-{% endfor %}    
+    <hr>
+{% endfor %}
+    
+    </div>
+</div>    
 
 {% endblock %}
+
+
+

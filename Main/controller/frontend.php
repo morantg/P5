@@ -5,32 +5,32 @@ require 'model/autoload.php';
 function register()
 {
 	$twig = App::get_twig();
+	$auth = App::getAuth();
 	$errors = array();
 	$db = DBFactory::getMysqlConnexionWithPDO();
-	$user = $db ->query('SELECT * from users ')->fetchAll();
+	$user = $auth->users($db);
 	if(!empty($_POST)){
-		//$errors = array();
 		$validator = new validator($_POST);
 		$validator->isAlpha('username',"Votre pseudo n'est pas valide (alphanumérique)");
-	
-	if($validator->isValid()){
-		$validator->isUniq('username', $db,'users','Ce pseudo est pris');
+		
+		if($validator->isValid()){
+			$validator->isUniq('username', $db,'users','Ce pseudo est pris');
+		}
+		$validator->isEmail('email',"email non valide");
+		
+		if($validator->isValid()){
+			$validator->isUniq('email', $db,'users','Ce mail est déjà pris');
+		}
+		$validator->isConfirmed('password','vous devez rentrer un mdp valide');
+		
+		if($validator->isValid()){
+			App::getAuth()->register($db,$_POST['username'],$_POST['password'],$_POST['email']);
+			Session::getInstance()->setFlash('success','email de confirmation envoyé');
+			App::redirect('index.php?action=login');
+		}else{
+			$errors = $validator->getErrors(); 
+		}
 	}
-	$validator->isEmail('email',"email non valide");
-	
-	if($validator->isValid()){
-		$validator->isUniq('email', $db,'users','Ce mail est déjà pris');
-	}
-	$validator->isConfirmed('password','vous devez rentrer un mdp valide');
-
-	if($validator->isValid()){
-		App::getAuth()->register($db,$_POST['username'],$_POST['password'],$_POST['email']);
-		Session::getInstance()->setFlash('success','email de confirmation envoyé');
-		App::redirect('index.php?action=login');
-	}else{
-		$errors = $validator->getErrors(); 
-	}
-}
 	echo $twig->render('register_view.php',array(
 		'errors' => $errors
 	));
@@ -47,9 +47,9 @@ function login()
 	if($auth->user()){
 		App::redirect('index.php?action=account');
 	}
+
 	if(!empty($_POST) && !empty($_POST['username']) && !empty($_POST['password'])){
 		$user = $auth->login($db,$_POST['username'],$_POST['password'],isset($_POST['remember']));
-		//$session = Session::getInstance();
 		if ($user){
 			$session->setFlash('success','Vous êtes maintenant connecté');
 			App::redirect('index.php?action=account');
@@ -83,9 +83,11 @@ function confirm()
 
 function account()
 {
-	
+	$db = DBFactory::getMysqlConnexionWithPDO();
 	$twig = App::get_twig();
 	App::getAuth()->restrict();
+	$validator = new validator($_POST);
+	$admin = $validator->isAdmin($db,$_SESSION['auth']->id);
 	$session_instance = Session::getInstance();
 	if(!empty($_POST)){
 		if(empty($_POST['password']) || $_POST['password'] != $_POST['password_confirm']){
@@ -97,13 +99,13 @@ function account()
 		$req = $db->prepare('UPDATE users SET password = ?');
 		$req->execute([$password]);
 		$_SESSION['flash']['success'] = "mdp mis a jour";
-
 		App::redirect('index.php?action=account');
 	    }
 	}
 	echo $twig->render('account_view.php',array(
 		'session' => $_SESSION,
-		'session_instance' => $session_instance 
+		'session_instance' => $session_instance,
+		'admin' => $admin 
 	));
 }
 
@@ -114,7 +116,6 @@ function forget()
 	if(!empty($_POST) && !empty($_POST['email'])){
 	$db = DBFactory::getMysqlConnexionWithPDO();	
 	$auth = App::getAuth();
-	//$session = Session::getInstance();
 		if($auth->resetPassword($db,$_POST['email'])){
 			$session->setFlash('success','les instructions du rappel de mot de passe vous ont été envoyées par emails');
 			App::redirect('index.php?action=login');
@@ -136,41 +137,41 @@ function reset_password()
 	$auth = App::getAuth();
 	$db = DBFactory::getMysqlConnexionWithPDO();
 	$user = $auth->checkResetToken($db,$_GET['id'],$_GET['token']);
-
 		if($user){
 			if(!empty($_POST)){
 				$validator = new Validator($_POST);
 				$validator->isConfirmed('password');
 				if($validator->isValid()){
 					$password = $auth->hashPassword($_POST['password']);
-					$req = $db->prepare('UPDATE users SET password = ?, reset_at = NULL, reset_token = NULL WHERE id = ?');
-					$req->execute([$password,$_GET['id']]);
+					$auth->confirmReset($password,$_GET['id'],$db);
 					$auth->connect($user);
 					Session::getInstance()->setFlash('success',"Votre mot de passe a bien été modifié");
 					App::redirect('index.php?action=account');
 				}
 			}
-			}else{
+		}else{
 				Session::getInstance()->setFlash('danger',"ce token n'est plus valide");
 				App::redirect('index.php?action=login');
-		}
-		}else{
+			}
+	}else{
 			App::redirect('index.php?action=login');
-	}
+		}
 	echo $twig->render('reset_view.php'); 
 }
 
 function listPosts()
 {
+	$session = Session::getInstance();
 	$twig = App::get_twig();
 	$auth = App::getAuth();
     $db = DBFactory::getMysqlConnexionWithPDO();
     $postManager = new NewsManager($db); 
-    $posts = $postManager->getPosts();  
-
-    echo $twig->render('listPostsView.php',array(
+    $posts = $postManager->getList();
+      
+	echo $twig->render('listPostsView.php',array(
 		'session' => $_SESSION,
-		'post'    => $posts
+		'post'    => $posts,
+		'session_instance' => $session,
 	));
 }
 
@@ -179,46 +180,63 @@ function post()
 	$twig = App::get_twig();
     $auth = App::getAuth();
     $db = DBFactory::getMysqlConnexionWithPDO();
+    $session = Session::getInstance();
     $postManager = new NewsManager($db);
     $commentManager = new CommentManager($db);
 
-    $post = $postManager->getPost($_GET['id']);
+	$post = $postManager->getUnique((int)$_GET['id']);
     $comments = $commentManager->getComments($_GET['id']);
 
-    echo $twig->render('PostView.php',array(
+	echo $twig->render('PostView.php',array(
 		'session' => $_SESSION,
 		'post'    => $post,
-		'comments'=> $comments
+		'comments'=> $comments,
+		'session_instance' => $session
 	));
 }
 
 function addComment($postId, $author, $comment)
 {
-    $db = DBFactory::getMysqlConnexionWithPDO();
+    $auth = App::getAuth();
+    $twig = App::get_twig();
+	$db = DBFactory::getMysqlConnexionWithPDO();
+	$session = Session::getInstance();
     $commentManager = new CommentManager($db);
 
+    if (empty($_POST['comment'])) {
+        $session->setFlash('danger','commentaire vide');
+        App::redirect('index.php?action=post&id=' . $postId);
+	}
+
     $affectedLines = $commentManager->postComment($postId, $author, $comment);
-
-    if ($affectedLines === false) {
+	if ($affectedLines === false) {
         throw new Exception('Impossible d\'ajouter le commentaire !');
-    }
-    else {
-        header('Location: index.php?action=post&id=' . $postId);
-    }
-
-    require('view/PostView.php');
+    }else {
+    	$session->setFlash('success','votre message a été soumis a la publication');
+    	App::redirect('index.php?action=post&id=' . $postId);
+	}
+	echo $twig->render('PostView.php',array(
+		'session' => $_SESSION
+	));
 }
 
 
 function edition()
 {
 	$db = DBFactory::getMysqlConnexionWithPDO();
-	App::getAuth()->restrict_admin($db);
+	$auth = App::getAuth();
+	$auth->restrict_admin($db);
+	$auth->restrict_superadmin($db);
+	$users = $auth->users($db);
 	$twig = App::get_twig();
+	$session = Session::getInstance();
 	$news = null;
-	$message = '';
+	$erreurs = null;
 	
 	$manager = new NewsManager($db);
+	$commentManager = new CommentManager($db);
+
+	$comments = $commentManager->allCommentsUnpublished();
 
 	if (isset($_GET['modifier']))
 	{
@@ -228,43 +246,60 @@ function edition()
 	if (isset($_GET['supprimer']))
 	{
   	$manager->delete((int) $_GET['supprimer']);
-  	$message = 'La news a bien été supprimée !';
+  	$session->setFlash('success','La news a bien été supprimée !');
+  	App::redirect('index.php?action=editPosts');
+	}
+
+	if (isset($_POST['permission'])){
+		
+		$auth->changer_permission($db, $_POST['permission'], $_POST['id']);
+		$session->setFlash('success','La nouvelle permission a bien été adoptée !');
+		App::redirect('index.php?action=editPosts');
+	}
+
+	if (isset($_POST['ids'])){
+
+		$commentManager->publication($_POST['ids']);
+		$session->setFlash('success','les commentaires ont bien été publiés !');
+		App::redirect('index.php?action=editPosts');
 	}
 
 	if (isset($_POST['auteur']))
 	{
-  	$news = new News(
-    	[
-      	'auteur' => $_POST['auteur'],
-      	'titre' => $_POST['titre'],
-      	'contenu' => $_POST['contenu']
-    	]
-  	);
-  	
+  		$news = new News(
+    		[
+      		'auteur' => $_POST['auteur'],
+      		'titre' => $_POST['titre'],
+      		'contenu' => $_POST['contenu']
+    		]
+  		);
+  		
+  		if (isset($_POST['id']))
+  		{
+   	 	$news->setId($_POST['id']);
+  		}
   
-  	if (isset($_POST['id']))
-  	{
-   	 $news->setId($_POST['id']);
+  		if ($news->isValid())
+  		{
+	   	 $manager->save($news);
+	    	if($news->isNew()){
+	   	 		$session->setFlash('success','La news a bien été ajoutée !');
+	   	 	}else{
+	   	 		$session->setFlash('success','La news a bien été modifiée !');
+	   	 	}
+	   	 	App::redirect('index.php?action=editPosts');
+    	}else{
+    		$erreurs = $news->erreurs();
+		}
   	}
-  
-  	if ($news->isValid())
-  	{
-   	 $manager->save($news);
-    
-    	$message = $news->isNew() ? 'La news a bien été ajoutée !' : 'La news a bien été modifiée !';
- 	}
-  	else
-  	{
-    	$erreurs = $news->erreurs();
-  	}
-  }
 	echo $twig->render('admin_view.php',array(
 		'session' => $_SESSION,
 		'new'    => $news,
-		'message' => $message,
-		'manager' => $manager
-		
-		
+		'manager' => $manager,
+		'session_instance' => $session,
+		'erreurs' => $erreurs,
+		'users' => $users,
+		'comments' => $comments
 	));
 }
 

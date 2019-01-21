@@ -78,7 +78,7 @@ class News
   {
     if (!is_string($auteur) || empty($auteur))
     {
-      $this->erreurs[] = self::AUTEUR_INVALIDE;
+      $this->erreurs[self::AUTEUR_INVALIDE] = 'attention auteur invalide !';
     }
     else
     {
@@ -90,7 +90,7 @@ class News
   {
     if (!is_string($titre) || empty($titre))
     {
-      $this->erreurs[] = self::TITRE_INVALIDE;
+      $this->erreurs[self::TITRE_INVALIDE] = 'attention titre invalide !';
     }
     else
     {
@@ -102,7 +102,7 @@ class News
   {
     if (!is_string($contenu) || empty($contenu))
     {
-      $this->erreurs[] = self::CONTENU_INVALIDE;
+      $this->erreurs[self::CONTENU_INVALIDE] = 'attention contenu invalide !';
     }
     else
     {

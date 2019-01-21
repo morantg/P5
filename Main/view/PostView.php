@@ -2,43 +2,56 @@
 
 {% block content %}
 
-<h1>Mon super blog !</h1>
-<p><a href="index.php">Retour à la liste des billets</a></p>
+<div class="row">
+    <div class="col-lg-8 col-md-10 mx-auto">
+        <div>
+            <a href="index.php">Retour à la liste des billets</a>
+        </div>
+        <hr>
+        <div class="post-preview">
+            <h3>
+                {{ post.titre }}
+            </h3>
+            <p> {{ post.contenu | raw }} </p>
+            {% if post.dateAjout  == post.dateModif  %}  
+            <p class="post-meta">Publié par
+                <a href="#">{{ post.auteur }}</a>
+                le {{ post.dateAjout.format('d/m/Y à H:i') }}
+            </p>
+            {% else %}
+            <p class="post-meta">Mis a jour par
+                <a href="#">{{ post.auteur }}</a>
+                le {{ post.dateModif.format('d/m/Y à H:i') }}
+            </p>
+            {% endif %}
+        </div>
 
-<div class="news">
-    <h3>
-        {{ post.titre }}
-        <em>le {{ post.creation_date_fr }}</em>
-    </h3>
-    
-    <p> {{ post.contenu }} </p>
-</div>
+        <h2>Commentaires</h2>
 
-<h2>Commentaires</h2>
+        {% if session['auth'] %}   
 
-{% if session['auth'] %}   
+        <form action="index.php?action=addComment&amp;id={{ post.id }}" method="POST">
+            <div class="form-group floating-label-form-group controls">
+                <label for="comment">Votre commentaire</label><br />
+                <input type="hidden" name="author" value="{{ session['auth'].username }}" />
+                <textarea rows="5" id="comment" name="comment" class="form-control" placeholder="Votre commentaire"></textarea>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Poster</button>
+        </form>
+        <br>
+        {% else %}
+        <a href="index.php?action=login">Connectez vous pour laisser un message.</a><br><br>
+        {% endif %}
 
-<form action="index.php?action=addComment&amp;id={{ post.id }}" method="POST">
-    <div>
-        <label for="author">Auteur</label><br />
-        <input type="text" id="author" name="author" class="form-control" />
+        {% for comment in comments %}
+
+        <p><strong>{{ comment.author }}</strong> le {{ comment.comment_date_fr }}</p>
+        <p>{{ comment.comment }}</p>
+
+        {% endfor %}
     </div>
-    <div>
-        <label for="comment">Commentaire</label><br />
-        <textarea id="comment" name="comment" class="form-control"></textarea>
-    </div>
-    <br>
-        <button type="submit" class="btn btn-primary">Poster</button>
-</form>
-<br>
-{% endif %}
-
-{% for comment in comments %}
-
-<p><strong>{{ comment.author }}</strong> le {{ comment.comment_date_fr }}</p>
-<p>{{ comment.comment }}</p>
-
-{% endfor %}   
+</div>   
 
 {% endblock %}
 
