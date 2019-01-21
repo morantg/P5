@@ -1,3 +1,10 @@
+<?php 
+$auth = App::getAuth();
+if(isset($_SESSION['auth'])){
+$db = DBFactory::getMysqlConnexionWithPDO(); 
+$admin = Validator::isAdmin($db,$_SESSION['auth']->id);
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -8,7 +15,6 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
-
     <title>Mon projet</title>
 
     <!-- Bootstrap core CSS -->
@@ -18,7 +24,6 @@
   </head>
 
   <body>
-    <?php $auth = App::getAuth(); ?>
     <nav class="navbar navbar-inverse">
       <div class="container">
         <div class="navbar-header">
@@ -34,9 +39,12 @@
           <ul class="nav navbar-nav">
             <?php if(isset($_SESSION['auth'])): ?>
               <li><a href="index.php?action=listPosts">Posts</a></li>
+            <?php if($admin): ?>  
+              <li><a href="index.php?action=editPosts">Edition</a></li>
+            <?php endif; ?>  
               <li><a href="index.php?action=logout">deco</a></li>
             <?php else: ?>
-            <li><a href="index.php?action=listPosts">Posts</a></li>
+            <li><a href="index.php?action=listPosts">Posts</a></li> 
             <li><a href="index.php?action=register">S'inscrire</a></li>
             <li><a href="index.php?action=login">Se connecter</a></li>
           <?php endif; ?>
@@ -56,6 +64,10 @@
             unset($_SESSION['flash']);
         }
         ?>
+
+        
+
+
 
 
 

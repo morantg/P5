@@ -52,4 +52,16 @@ class Validator{
 	public function getErrors(){
 		return $this->errors;
 	}
+
+	public static function isAdmin($db,$user_id){
+		$req = $db->prepare('SELECT permission FROM users WHERE id = ?');
+		$req->execute([$user_id]);
+		$user= $req->fetch();
+		
+		if($user->permission == 'admin'){
+			return true;
+		}else{
+			return false;
+		}
+	}
 }

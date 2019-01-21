@@ -140,7 +140,7 @@ function reset_password()
 function listPosts()
 {
     $db = DBFactory::getMysqlConnexionWithPDO();
-    $postManager = new PostManager($db); 
+    $postManager = new NewsManager($db); 
     $posts = $postManager->getPosts();  
 
     require('view/listPostsView.php');
@@ -149,13 +149,13 @@ function listPosts()
 function post()
 {
     $db = DBFactory::getMysqlConnexionWithPDO();
-    $postManager = new PostManager($db);
+    $postManager = new NewsManager($db);
     $commentManager = new CommentManager($db);
 
     $post = $postManager->getPost($_GET['id']);
     $comments = $commentManager->getComments($_GET['id']);
-	
-	require('view/PostView.php');
+
+    require('view/PostView.php');
 }
 
 function addComment($postId, $author, $comment)
@@ -173,6 +173,55 @@ function addComment($postId, $author, $comment)
     }
 
     require('view/PostView.php');
+}
+
+
+function edition()
+{
+	$db = DBFactory::getMysqlConnexionWithPDO();
+	App::getAuth()->restrict_admin($db);
+	
+	$manager = new NewsManager($db);
+
+	if (isset($_GET['modifier']))
+	{
+  	$news = $manager->getUnique((int) $_GET['modifier']);
+	}
+
+	if (isset($_GET['supprimer']))
+	{
+  	$manager->delete((int) $_GET['supprimer']);
+  	$message = 'La news a bien été supprimée !';
+	}
+
+	if (isset($_POST['auteur']))
+	{
+  	$news = new News(
+    	[
+      	'auteur' => $_POST['auteur'],
+      	'titre' => $_POST['titre'],
+      	'contenu' => $_POST['contenu']
+    	]
+  	);
+  	
+  
+  	if (isset($_POST['id']))
+  	{
+   	 $news->setId($_POST['id']);
+  	}
+  
+  	if ($news->isValid())
+  	{
+   	 $manager->save($news);
+    
+    	$message = $news->isNew() ? 'La news a bien été ajoutée !' : 'La news a bien été modifiée !';
+ 	}
+  	else
+  	{
+    	$erreurs = $news->erreurs();
+  	}
+  }
+  	require('view/admin_view.php');
 }
 
 

@@ -18,7 +18,7 @@ while ($data = $posts->fetch(PDO::FETCH_ASSOC))
         <p>
             <?= $data['contenu'] ?>
             <br />
-            <em><a href="index.php?action=post&amp;id=<?= $data['id'] ?>">Détail du post</a></em>
+            <em><a href="index.php?action=post&amp;id=<?= $data['id'] ?>">Commentaires</a></em>
         </p>
     </div>
 <?php
