@@ -18,7 +18,7 @@
   </head>
 
   <body>
-
+    <?php $auth = App::getAuth(); ?>
     <nav class="navbar navbar-inverse">
       <div class="container">
         <div class="navbar-header">
@@ -33,10 +33,10 @@
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <?php if(isset($_SESSION['auth'])): ?>
-              <li><a href="logout.php">deco</a></li>
-            <?php else: ?> 
-            <li><a href="register.php">S'inscrire</a></li>
-            <li><a href="login.php">Se connecter</a></li>
+              <li><a href="index.php?action=logout">deco</a></li>
+            <?php else: ?>
+            <li><a href="index.php?action=register">S'inscrire</a></li>
+            <li><a href="index.php?action=login">Se connecter</a></li>
           <?php endif; ?>
           </ul>
         </div><!--/.nav-collapse -->
