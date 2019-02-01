@@ -1,74 +1,17 @@
 <?php
 require('controller/frontend.php');
-//require 'inc/bootstrap.php';
+
 
 // Routing 
-
-
-try{
-    if (isset($_GET['action'])) {
-
-        $request = $_GET['action']
-        
-        switch ($request) {
-            case 'register':
-                register();
-                break;
-            case 'login':
-                login();
-                break;
-            case 'about':
-                about();
-                break;    
-            case 'logout':
-                logout();
-                break;
-            case 'contact':
-                contact();
-                break;    
-            case 'confirm':
-                confirm();
-                break;
-            case 'account':
-                account();
-                break;
-            case 'forget':
-                forget();
-                break;
-            case 'reset_password':
-                reset_password();
-                break;
-            case 'editPosts':
-                edition();
-                break;
-            case 'listPosts':
-                listPosts();
-                break;
-            case 'post':
-                if (isset($_GET['id']) && $_GET['id'] > 0) {
-                    post();
-                }
-                else {
-                    throw new Exception('Aucun identifiant de billet envoyé');
-                }
-                break;
-            case 'addComment':
-                if (isset($_GET['id']) && $_GET['id'] > 0) {
-                    addComment($_GET['id'], $_POST['author'], $_POST['comment']);
-                }
-                else {
-                    throw new Exception('Aucun identifiant de billet envoyé');
-                }
-                break;  
-            default:
-                listPosts();
-                break;
-        }
+if (isset($_GET['action']) && $_GET['action']!= 'addComment' ){
+    
+    $request = $_GET['action'];
+    $routeur = new Routeur($request);
+    $routeur->renderController();
+    }
+    elseif($_GET['action'] === 'addComment'){
+        addComment($_GET['id'], $_POST['author'], $_POST['comment']);
     }else{
-            listPosts();
-        }
+    about();
 }
 
-catch(Exception $e) {
-    echo 'Erreur : ' . $e->getMessage();
-}

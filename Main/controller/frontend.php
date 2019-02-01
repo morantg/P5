@@ -221,7 +221,7 @@ function addComment($postId, $author, $comment)
 }
 
 
-function edition()
+function editPosts()
 {
 	$db = DBFactory::getMysqlConnexionWithPDO();
 	$auth = App::getAuth();
