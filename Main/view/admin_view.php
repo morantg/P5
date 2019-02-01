@@ -101,6 +101,12 @@
   </table>  
  <br><button type="submit" class="btn btn-primary">publier</button>
 </form>
- 
+<br>
+<h3> Edition About </h3>
+<form action="index.php?action=about" method="POST">
+  <textarea rows="8" cols="60" class="mceEditor" name="about">Editer une nouvelle section a propos.</textarea><br />
+  <button type="submit" class="btn btn-primary">publier</button>
+</form>
+
 {% endblock %}
 

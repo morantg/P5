@@ -2,20 +2,30 @@
 require('controller/frontend.php');
 //require 'inc/bootstrap.php';
 
-// Routing  
+// Routing 
+
+
 try{
     if (isset($_GET['action'])) {
 
-        switch ($_GET['action']) {
+        $request = $_GET['action']
+        
+        switch ($request) {
             case 'register':
                 register();
                 break;
             case 'login':
                 login();
                 break;
+            case 'about':
+                about();
+                break;    
             case 'logout':
                 logout();
                 break;
+            case 'contact':
+                contact();
+                break;    
             case 'confirm':
                 confirm();
                 break;

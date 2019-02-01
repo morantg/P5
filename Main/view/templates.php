@@ -35,6 +35,9 @@
           <ul class="navbar-nav ml-auto">
             {% if session['auth'] %}
             <li class="nav-item">
+              <a class="nav-link" href="index.php?action=about">About</a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="index.php?action=listPosts">Posts</a>
             </li>
             <li class="nav-item">
@@ -46,9 +49,15 @@
             </li>
             {% endif %}
             <li class="nav-item">
+              <a class="nav-link" href="index.php?action=contact">Me contacter</a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="index.php?action=logout">deco</a>
             </li>
             {% else %}
+            <li class="nav-item">
+              <a class="nav-link" href="index.php?action=about">About</a>
+            </li>
             <li class="nav-item">
               <a class="nav-link" href="index.php?action=listPosts">Posts</a>
             </li>
@@ -57,6 +66,9 @@
             </li>
             <li class="nav-item">
               <a class="nav-link" href="index.php?action=login">Se connecter</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.php?action=contact">Me contacter</a>
             </li>
             {% endif %}
           </ul>
@@ -79,6 +91,8 @@
     </header>
 
     <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
       
        {% if session_instance.hasFlashes %}
 
@@ -91,6 +105,8 @@
        {% endif %}
         
        {% block content %}{% endblock %}
+        </div>
+      </div>
     </div>
     
     <!-- Footer -->

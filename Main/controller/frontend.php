@@ -303,6 +303,38 @@ function edition()
 	));
 }
 
+function about(){
+	$db = DBFactory::getMysqlConnexionWithPDO();
+	$title_about = App::getTitleAbout();
+	$twig = App::get_twig();
+	$session = Session::getInstance();
+	$about = new About($db);
+	$contenu = $about->getAbout();
+
+	if(isset($_POST['about'])){
+		$about->editAbout($_POST['about']);
+		App::redirect('index.php?action=editPosts');
+	}
+	
+	
+	echo $twig->render('about_view.php',array(
+		'session' => $_SESSION,
+		'title_about' => $title_about,
+		'contenu' => $contenu
+	));
+}
+
+function contact(){
+	
+	$twig = App::get_twig();
+	$session = Session::getInstance();
+
+	echo $twig->render('contact_view.php',array(
+		'session' => $_SESSION
+	));
+}
+
+
 
 
 

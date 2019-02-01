@@ -2,6 +2,8 @@
 
 class App{
 
+	private static $title_about = 'About Me';
+
 	static function getAuth(){
 		return new Auth(Session::getInstance(),['restriction_msg' => 'pas le droit d accès']);
 	}
@@ -25,6 +27,8 @@ class App{
 		return $twig;
 	}
 
-	
+	public static function getTitleAbout(){
+		return self::$title_about;
+	}
 
 }

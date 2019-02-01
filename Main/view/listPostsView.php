@@ -2,8 +2,7 @@
 
 {% block content %}
 
-<div class="row">
-    <div class="col-lg-8 col-md-10 mx-auto">    
+ 
 {% for data in post %}
     <div class="post-preview">
         <a href="index.php?action=post&amp;id={{ data.id }}">
@@ -22,8 +21,7 @@
     <hr>
 {% endfor %}
     
-    </div>
-</div>    
+    
 
 {% endblock %}
 
