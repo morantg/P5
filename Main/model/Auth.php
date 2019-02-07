@@ -14,6 +14,11 @@ class Auth{
 		return password_hash($password, PASSWORD_BCRYPT);
 	}
 
+	public function passwordUpdate($password, $db, $id){
+		$req = $db->prepare('UPDATE users SET password = ? WHERE id = ?');
+		$req->execute([$password, $id]);
+	}
+
 	public function register($db,$username,$password,$email){
 		$password = $this->hashPassword($password);
 		$token = App::random(60);
@@ -22,7 +27,7 @@ class Auth{
 		$req->execute([$username,$password, $email,$token]);
 		$user_id = $db->lastInsertId();
 
-		mail($email, "confirmation compte","afin de valider votre compte merci de cliquer sur ce lien\n\nhttp://http://localhost/Openclassrooms/Projet/p5_test/Main/index.php?action=confirm&id=$user_id&token=$token");
+		mail($email, "confirmation compte","afin de valider votre compte merci de cliquer sur ce lien\n\nlocalhost/Openclassrooms/Projet/P5/Main/index.php?action=confirm&id=$user_id&token=$token");
 	}
 
 	public function confirm($db,$user_id,$token){
@@ -149,7 +154,7 @@ class Auth{
 			$req = $db->prepare('UPDATE users SET reset_token = ?, reset_at = NOW() WHERE id = ?');
 			$req->execute([$reset_token,$user->id]);
 						
-			mail($_POST['email'], "réinitialisation de votre mot de passe ","afin de réinitialiser votre mot de passe merci de cliquer sur ce lien\n\nhttp://http://localhost/Openclassrooms/Projet/p5_test/Main/index.php?action=reset_password&id={$user->id}&token=$reset_token");
+			mail($_POST['email'], "réinitialisation de votre mot de passe ","afin de réinitialiser votre mot de passe merci de cliquer sur ce lien\n\nlocalhost/Openclassrooms/Projet/P5/Main/index.php?action=reset_password&id={$user->id}&token=$reset_token");
 			return $user;
 		}
 		return false;
@@ -163,7 +168,7 @@ class Auth{
 	public function checkResetToken($db,$user_id,$token){
 		$req = $db->prepare('SELECT * FROM users WHERE id = ? AND reset_token IS NOT NULL AND reset_token = ? AND reset_at > DATE_SUB(NOW(),INTERVAL 30 MINUTE)');
 		$req->execute([$user_id, $token]);
-		$ret = $req->fecth();
+		$ret = $req->fetch();
 		return $ret;
 	}
 }

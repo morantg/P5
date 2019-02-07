@@ -85,7 +85,8 @@ function account()
 {
 	$db = DBFactory::getMysqlConnexionWithPDO();
 	$twig = App::get_twig();
-	App::getAuth()->restrict();
+	$auth = App::getAuth();
+	$auth->restrict();
 	$validator = new validator($_POST);
 	$admin = $validator->isAdmin($db,$_SESSION['auth']->id);
 	$session_instance = Session::getInstance();
@@ -96,8 +97,7 @@ function account()
 		$user_id = $_SESSION['auth']->id;
 		$password= password_hash($_POST['password'],PASSWORD_BCRYPT);
 		$db = DBFactory::getMysqlConnexionWithPDO();
-		$req = $db->prepare('UPDATE users SET password = ?');
-		$req->execute([$password]);
+		$auth->passwordUpdate($password, $db, $user_id );
 		$_SESSION['flash']['success'] = "mdp mis a jour";
 		App::redirect('index.php?action=account');
 	    }
@@ -316,7 +316,6 @@ function about(){
 		App::redirect('index.php?action=editPosts');
 	}
 	
-	
 	echo $twig->render('about_view.php',array(
 		'session' => $_SESSION,
 		'title_about' => $title_about,
@@ -328,9 +327,27 @@ function contact(){
 	
 	$twig = App::get_twig();
 	$session = Session::getInstance();
+	$errors = array();
 
+	if(!empty($_POST)){
+		$validator = new validator($_POST);
+		
+		$validator->isEmail('email',"email non valide");
+		$validator->isEmpty('objet',"veuillez mettre un objet pour votre message");
+		$validator->isEmpty('message',"votre message est vide");
+		
+		if($validator->isValid()){
+			mail("gmorant@gmail.com",$_POST['objet'] ,$_POST['message']);
+			$session->setFlash('success','votre message a bien été envoyé');
+			App::redirect('index.php?action=contact');
+		}else{
+			$errors = $validator->getErrors(); 
+		}
+	}
 	echo $twig->render('contact_view.php',array(
-		'session' => $_SESSION
+		'session' => $_SESSION,
+		'errors' => $errors,
+		'session_instance' => $session
 	));
 }
 

@@ -22,6 +22,13 @@ class Validator{
 		}
 	}
 
+	public function isEmpty($field,$errorMsg){
+		if(empty($this->getField($field))){
+			$this->errors[$field] = $errorMsg;
+		}
+	}
+
+
 	public function isUniq($field, $db,$table, $errorMsg){
 		$record = $db->prepare("SELECT id FROM $table WHERE $field = ?");
 		$record->execute([$this->getField($field)]);

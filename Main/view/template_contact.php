@@ -93,6 +93,16 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
+          {% if session_instance.hasFlashes %}
+
+          {% for keys, message in session_instance.getFlashes  %}
+
+          <br /><div class="alert alert-{{ keys }}"> {{ message }} </div>
+
+          {% endfor %}
+       
+          {% endif %}
+          
           {% block content %}{% endblock %}
         </div>
       </div>
