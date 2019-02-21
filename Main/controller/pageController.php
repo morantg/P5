@@ -13,7 +13,7 @@ class pageController extends Controller{
 
 		if(isset($_POST['about'])){
 			$about->editAbout($_POST['about']);
-			App::redirect('index.php?action=editPosts');
+			App::redirect('index.php?action=post.editPosts');
 		}
 		
 		$this->render('about_view.php',array(
@@ -39,7 +39,7 @@ class pageController extends Controller{
 			if($validator->isValid()){
 				mail("gmorant@gmail.com",$_POST['objet'] ,$_POST['message']);
 				$session->setFlash('success','votre message a bien été envoyé');
-				App::redirect('index.php?action=contact');
+				App::redirect('index.php?action=page.contact');
 			}else{
 				$errors = $validator->getErrors(); 
 			}

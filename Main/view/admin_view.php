@@ -51,7 +51,7 @@
         
   {% for new in manager.getList %}
 
-    <tr><td>{{ new.auteur }}</td><td>{{ new.titre }}</td><td>{{ new.dateAjout.format('d/m/Y à H:i') }}</td><td>{{ (new.dateAjout == new.dateModif) ? '-' : new.dateModif.format('d/m/Y à H:i') }}</td><td><a href="index.php?action=editPosts&modifier={{ new.id }}">Modifier</a> | <a href="index.php?action=editPosts&supprimer={{ new.id }}">Supprimer</a></td></tr>
+    <tr><td>{{ new.auteur }}</td><td>{{ new.titre }}</td><td>{{ new.dateAjout.format('d/m/Y à H:i') }}</td><td>{{ (new.dateAjout == new.dateModif) ? '-' : new.dateModif.format('d/m/Y à H:i') }}</td><td><a href="index.php?action=post.editPosts&modifier={{ new.id }}">Modifier</a> | <a href="index.php?action=post.editPosts&supprimer={{ new.id }}">Supprimer</a></td></tr>
 
   {% endfor %}  
 </table>
@@ -103,7 +103,7 @@
 </form>
 <br>
 <h3> Edition About </h3>
-<form action="index.php?action=about" method="POST">
+<form action="index.php?action=page.about" method="POST">
   <textarea rows="8" cols="60" class="mceEditor" name="about">Editer une nouvelle section a propos.</textarea><br />
   <button type="submit" class="btn btn-primary">publier</button>
 </form>

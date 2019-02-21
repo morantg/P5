@@ -65,21 +65,21 @@ class postController extends Controller{
 		{
 	  	$manager->delete((int) $_GET['supprimer']);
 	  	$session->setFlash('success','La news a bien été supprimée !');
-	  	App::redirect('index.php?action=editPosts');
+	  	App::redirect('index.php?action=post.editPosts');
 		}
 
 		if (isset($_POST['permission'])){
 			
 			$auth->changer_permission($db, $_POST['permission'], $_POST['id']);
 			$session->setFlash('success','La nouvelle permission a bien été adoptée !');
-			App::redirect('index.php?action=editPosts');
+			App::redirect('index.php?action=post.editPosts');
 		}
 
 		if (isset($_POST['ids'])){
 
 			$commentManager->publication($_POST['ids']);
 			$session->setFlash('success','les commentaires ont bien été publiés !');
-			App::redirect('index.php?action=editPosts');
+			App::redirect('index.php?action=post.editPosts');
 		}
 
 		if (isset($_POST['auteur']))
@@ -105,7 +105,7 @@ class postController extends Controller{
 		   	 	}else{
 		   	 		$session->setFlash('success','La news a bien été modifiée !');
 		   	 	}
-		   	 	App::redirect('index.php?action=editPosts');
+		   	 	App::redirect('index.php?action=post.editPosts');
 	    	}else{
 	    		$erreurs = $news->erreurs();
 			}
@@ -123,7 +123,7 @@ class postController extends Controller{
 	}
 
 
-	public function addComment($postId, $author, $comment){
+	public function addComment(){
 
 		$auth = App::getAuth();
 	    $db = DBFactory::getMysqlConnexionWithPDO();
@@ -132,15 +132,15 @@ class postController extends Controller{
 
 	    if (empty($_POST['comment'])) {
 	        $session->setFlash('danger','commentaire vide');
-	        App::redirect('index.php?action=post&id=' . $postId);
+	        App::redirect('index.php?action=post.post&id=' . $_GET['id']);
 		}
 
-	    $affectedLines = $commentManager->postComment($postId, $author, $comment);
+	    $affectedLines = $commentManager->postComment($_GET['id'], $_POST['author'], $_POST['comment']);
 		if ($affectedLines === false) {
 	        throw new Exception('Impossible d\'ajouter le commentaire !');
 	    }else {
 	    	$session->setFlash('success','votre message a été soumis a la publication');
-	    	App::redirect('index.php?action=post&id=' . $postId);
+	    	App::redirect('index.php?action=post.post&id=' . $_GET['id']);
 		}
 		$this->render('PostView.php',array(
 			'session' => $_SESSION

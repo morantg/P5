@@ -35,40 +35,40 @@
           <ul class="navbar-nav ml-auto">
             {% if session['auth'] %}
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=about">About</a>
+              <a class="nav-link" href="index.php?action=page.about">About</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=listPosts">Posts</a>
+              <a class="nav-link" href="index.php?action=post.listPosts">Posts</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=account">Mon compte</a>
+              <a class="nav-link" href="index.php?action=auth.account">Mon compte</a>
             </li>
             {% if session['admin'] %} 
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=editPosts">Edition</a>
+              <a class="nav-link" href="index.php?action=post.editPosts">Edition</a>
             </li>
             {% endif %}
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=contact">Me contacter</a>
+              <a class="nav-link" href="index.php?action=page.contact">Me contacter</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=logout">deco</a>
+              <a class="nav-link" href="index.php?action=auth.logout">deco</a>
             </li>
             {% else %}
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=about">About</a>
+              <a class="nav-link" href="index.php?action=page.about">About</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=listPosts">Posts</a>
+              <a class="nav-link" href="index.php?action=post.listPosts">Posts</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=register">S'inscrire</a>
+              <a class="nav-link" href="index.php?action=auth.register">S'inscrire</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=login">Se connecter</a>
+              <a class="nav-link" href="index.php?action=auth.login">Se connecter</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=contact">Me contacter</a>
+              <a class="nav-link" href="index.php?action=page.contact">Me contacter</a>
             </li>
             {% endif %}
           </ul>

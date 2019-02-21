@@ -29,7 +29,7 @@
 
         {% if session['auth'] %}   
 
-        <form action="index.php?action=addComment&amp;id={{ post.id }}" method="POST">
+        <form action="index.php?action=post.addComment&amp;id={{ post.id }}" method="POST">
             <div class="form-group floating-label-form-group controls">
                 <label for="comment">Votre commentaire</label><br />
                 <input type="hidden" name="author" value="{{ session['auth'].username }}" />
@@ -40,7 +40,7 @@
         </form>
         <br>
         {% else %}
-        <a href="index.php?action=login">Connectez vous pour laisser un message.</a><br><br>
+        <a href="index.php?action=auth.login">Connectez vous pour laisser un message.</a><br><br>
         {% endif %}
 
         {% for comment in comments %}

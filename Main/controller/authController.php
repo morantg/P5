@@ -13,14 +13,14 @@ class authController extends Controller{
 		$session = Session::getInstance();
 	
 		if($auth->user()){
-		App::redirect('index.php?action=account');
+		App::redirect('index.php?action=auth.account');
 		}
 
 		if(!empty($_POST) && !empty($_POST['username']) && !empty($_POST['password'])){
 		$user = $auth->login($db,$_POST['username'],$_POST['password'],isset($_POST['remember']));
 			if ($user){
 			$session->setFlash('success','Vous êtes maintenant connecté');
-			App::redirect('index.php?action=account');
+			App::redirect('index.php?action=auth.account');
 			}else{
 			$session->setFlash('danger','Identifiant ou mot de passe incorrecte');
 			}
@@ -49,7 +49,7 @@ class authController extends Controller{
 			$db = DBFactory::getMysqlConnexionWithPDO();
 			$auth->passwordUpdate($password, $db, $user_id );
 			$_SESSION['flash']['success'] = "mdp mis a jour";
-			App::redirect('index.php?action=account');
+			App::redirect('index.php?action=auth.account');
 	    	}
 		}
 		
@@ -64,7 +64,7 @@ class authController extends Controller{
 		
 		App::getAuth()->logout();
 		Session::getInstance()->setFlash('success','vous etes deco');
-		App::redirect('index.php?action=login');
+		App::redirect('index.php?action=auth.login');
 	}
 
 	public function register(){
@@ -90,7 +90,7 @@ class authController extends Controller{
 			if($validator->isValid()){
 				App::getAuth()->register($db,$_POST['username'],$_POST['password'],$_POST['email']);
 				Session::getInstance()->setFlash('success','email de confirmation envoyé');
-				App::redirect('index.php?action=login');
+				App::redirect('index.php?action=auth.login');
 			}else{
 				$errors = $validator->getErrors(); 
 			}
@@ -106,10 +106,10 @@ class authController extends Controller{
 		$db = DBFactory::getMysqlConnexionWithPDO();
 		if(App::getAuth()->confirm($db, $_GET['id'], $_GET['token'], Session::getInstance())){
 			Session::getInstance()->setFlash('success',"compte validé");
-			App::redirect('index.php?action=account');
+			App::redirect('index.php?action=auth.account');
 		}else{
 			Session::getInstance()->setFlash('danger',"ce token n'est plus valide");
-			App::redirect('index.php?action=login');
+			App::redirect('index.php?action=auth.login');
 		}	
 	}
 
@@ -122,10 +122,10 @@ class authController extends Controller{
 		$auth = App::getAuth();
 			if($auth->resetPassword($db,$_POST['email'])){
 				$session->setFlash('success','les instructions du rappel de mot de passe vous ont été envoyées par emails');
-				App::redirect('index.php?action=login');
+				App::redirect('index.php?action=auth.login');
 			}else{
 				$session->setFlash('danger','pas de correspondance');
-				App::redirect('index.php?action=forget');
+				App::redirect('index.php?action=auth.forget');
 			}
 		}
 		$this->render('forget_view.php',array(
@@ -148,15 +148,15 @@ class authController extends Controller{
 						$auth->confirmReset($password,$_GET['id'],$db);
 						$auth->connect($user);
 						Session::getInstance()->setFlash('success',"Votre mot de passe a bien été modifié");
-						App::redirect('index.php?action=account');
+						App::redirect('index.php?action=auth.account');
 					}
 				}
 			}else{
 					Session::getInstance()->setFlash('danger',"ce token n'est plus valide");
-					App::redirect('index.php?action=login');
+					App::redirect('index.php?action=auth.login');
 				}
 		}else{
-				App::redirect('index.php?action=login');
+				App::redirect('index.php?action=auth.login');
 			}
 		
 		$this->render('reset_view.php');
