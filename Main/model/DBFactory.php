@@ -1,8 +1,7 @@
 <?php
-class DBFactory
-{
-  public static function getMysqlConnexionWithPDO()
-  {
+class DBFactory{
+  
+  public static function getMysqlConnexionWithPDO(){
     $db = new PDO('mysql:host=localhost;dbname=p5_blog', 'root', '');
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $db->exec('set names utf8');

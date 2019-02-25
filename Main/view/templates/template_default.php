@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Mon projet</title>
+    <title>Mon blog</title>
 
     <!-- Bootstrap core CSS -->
     <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -26,7 +26,7 @@
      <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
       <div class="container">
-        <a class="navbar-brand" href="index.php">Mon projet</a>
+        <a class="navbar-brand" href="index.php">Mon blog</a>
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           Menu
           <i class="fas fa-bars"></i>
@@ -35,31 +35,31 @@
           <ul class="navbar-nav ml-auto">
             {% if session['auth'] %}
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=page.about">About</a>
+              <a class="nav-link" href="index.php?action=page.about">A propos</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=post.listPosts">Posts</a>
+              <a class="nav-link" href="index.php?action=post.list">News</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="index.php?action=auth.account">Mon compte</a>
             </li>
             {% if session['admin'] %} 
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=post.editPosts">Edition</a>
+              <a class="nav-link" href="index.php?action=post.edit">Edition</a>
             </li>
             {% endif %}
             <li class="nav-item">
               <a class="nav-link" href="index.php?action=page.contact">Me contacter</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=auth.logout">deco</a>
+              <a class="nav-link" href="index.php?action=auth.logout">Se déconnecter</a>
             </li>
             {% else %}
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=page.about">About</a>
+              <a class="nav-link" href="index.php?action=page.about">A propos</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=post.listPosts">Posts</a>
+              <a class="nav-link" href="index.php?action=post.list">News</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="index.php?action=auth.register">S'inscrire</a>

@@ -1,4 +1,4 @@
-{% extends 'templates.php' %}
+{% extends 'templates/template_default.php' %}
 
 {% block content %}
 

@@ -2,86 +2,66 @@
 
 class postController extends Controller{
 
+	public function __construct(){
+		$this->db = DBFactory::getMysqlConnexionWithPDO();
+		$this->postManager = new NewsManager($this->db);
+		$this->commentManager = new CommentManager($this->db);
+		$this->auth = App::getAuth();
+		$this->session = Session::getInstance();
+	}
 
-
-	public function listPosts(){
-		
-		$session = Session::getInstance();
-		$auth = App::getAuth();
-    	$db = DBFactory::getMysqlConnexionWithPDO();
-    	$postManager = new NewsManager($db); 
-    	$posts = $postManager->getList();
-      
-		$this->render('listPostsView.php',array(
+	public function list(){
+		$posts = $this->postManager->getList();
+      	
+      	$this->render('listView.php',array(
 			'session' => $_SESSION,
 			'post'    => $posts,
-			'session_instance' => $session
+			'session_instance' => $this->session
 		));
 	}
 
-	
-	public function post(){
-
-    	$auth = App::getAuth();
-    	$db = DBFactory::getMysqlConnexionWithPDO();
-   	 	$session = Session::getInstance();
-    	$postManager = new NewsManager($db);
-    	$commentManager = new CommentManager($db);
-
-		$post = $postManager->getUnique((int)$_GET['id']);
-    	$comments = $commentManager->getComments($_GET['id']);
+	public function show(){
+		$post = $this->postManager->getUnique((int)$_GET['id']);
+    	$comments = $this->commentManager->getComments($_GET['id']);
 
 		$this->render('PostView.php',array(
 		'session' => $_SESSION,
 		'post'    => $post,
 		'comments'=> $comments,
-		'session_instance' => $session
+		'session_instance' => $this->session
 		));
 	}
 
-	
-	public function editPosts(){
-
-		$db = DBFactory::getMysqlConnexionWithPDO();
-		$auth = App::getAuth();
-		$auth->restrict_admin($db);
-		$auth->restrict_superadmin($db);
-		$users = $auth->users($db);
-		$session = Session::getInstance();
+	public function edit(){
 		$news = null;
 		$erreurs = null;
-		
-		$manager = new NewsManager($db);
-		$commentManager = new CommentManager($db);
-
-		$comments = $commentManager->allCommentsUnpublished();
+		$this->auth->restrict_admin($this->db);
+		$this->auth->restrict_superadmin($this->db);
+		$users = $this->auth->users($this->db);
+		$comments = $this->commentManager->allCommentsUnpublished();
 
 		if (isset($_GET['modifier']))
 		{
-	  	$news = $manager->getUnique((int) $_GET['modifier']);
+	  	$news = $this->postManager->getUnique((int) $_GET['modifier']);
 		}
-
 		if (isset($_GET['supprimer']))
 		{
-	  	$manager->delete((int) $_GET['supprimer']);
-	  	$session->setFlash('success','La news a bien été supprimée !');
-	  	App::redirect('index.php?action=post.editPosts');
+	  	$this->postManager->delete((int) $_GET['supprimer']);
+	  	$this->session->setFlash('success','La news a bien été supprimée !');
+	  	App::redirect('index.php?action=post.edit');
 		}
-
 		if (isset($_POST['permission'])){
 			
-			$auth->changer_permission($db, $_POST['permission'], $_POST['id']);
-			$session->setFlash('success','La nouvelle permission a bien été adoptée !');
-			App::redirect('index.php?action=post.editPosts');
+			$this->auth->changer_permission($this->db, $_POST['permission'], $_POST['id']);
+			$this->session->setFlash('success','La nouvelle permission a bien été adoptée !');
+			App::redirect('index.php?action=post.edit');
 		}
-
 		if (isset($_POST['ids'])){
 
-			$commentManager->publication($_POST['ids']);
-			$session->setFlash('success','les commentaires ont bien été publiés !');
-			App::redirect('index.php?action=post.editPosts');
+			$this->commentManager->publication($_POST['ids']);
+			$this->session->setFlash('success','les commentaires ont bien été publiés !');
+			App::redirect('index.php?action=post.edit');
 		}
-
 		if (isset($_POST['auteur']))
 		{
 	  		$news = new News(
@@ -99,54 +79,42 @@ class postController extends Controller{
 	  
 	  		if ($news->isValid())
 	  		{
-		   	 $manager->save($news);
+		   	 $this->postManager->save($news);
 		    	if($news->isNew()){
-		   	 		$session->setFlash('success','La news a bien été ajoutée !');
+		   	 		$this->session->setFlash('success','La news a bien été ajoutée !');
 		   	 	}else{
-		   	 		$session->setFlash('success','La news a bien été modifiée !');
+		   	 		$this->session->setFlash('success','La news a bien été modifiée !');
 		   	 	}
-		   	 	App::redirect('index.php?action=post.editPosts');
+		   	 	App::redirect('index.php?action=post.edit');
 	    	}else{
 	    		$erreurs = $news->erreurs();
 			}
 		}
-		
-		$this->render('admin_view.php',array(
+		$this->render('adminView.php',array(
 			'session' => $_SESSION,
 			'new'    => $news,
-			'manager' => $manager,
-			'session_instance' => $session,
+			'manager' => $this->postManager,
+			'session_instance' => $this->session,
 			'erreurs' => $erreurs,
 			'users' => $users,
 			'comments' => $comments
 		));
 	}
 
-
 	public function addComment(){
-
-		$auth = App::getAuth();
-	    $db = DBFactory::getMysqlConnexionWithPDO();
-		$session = Session::getInstance();
-	    $commentManager = new CommentManager($db);
-
-	    if (empty($_POST['comment'])) {
-	        $session->setFlash('danger','commentaire vide');
-	        App::redirect('index.php?action=post.post&id=' . $_GET['id']);
+		if (empty($_POST['comment'])) {
+	        $this->session->setFlash('danger','commentaire vide');
+	        App::redirect('index.php?action=post.show&id=' . $_GET['id']);
 		}
-
-	    $affectedLines = $commentManager->postComment($_GET['id'], $_POST['author'], $_POST['comment']);
+		$affectedLines = $this->commentManager->postComment($_GET['id'], $_POST['author'], $_POST['comment']);
 		if ($affectedLines === false) {
 	        throw new Exception('Impossible d\'ajouter le commentaire !');
 	    }else {
-	    	$session->setFlash('success','votre message a été soumis a la publication');
-	    	App::redirect('index.php?action=post.post&id=' . $_GET['id']);
+	    	$this->session->setFlash('success','votre message a été soumis a la publication');
+	    	App::redirect('index.php?action=post.show&id=' . $_GET['id']);
 		}
 		$this->render('PostView.php',array(
 			'session' => $_SESSION
 		));
-
 	}
-
-
 }

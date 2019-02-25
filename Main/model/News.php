@@ -65,6 +65,12 @@ class News
   {
     return !(empty($this->auteur) || empty($this->titre) || empty($this->contenu));
   }
+
+
+  public function getExtrait(){
+    $html = substr($this->contenu, 0,200) . '...';
+    return $html;
+  }
   
   
   // SETTERS //

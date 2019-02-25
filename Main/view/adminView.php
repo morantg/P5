@@ -1,4 +1,4 @@
-{% extends 'templates.php' %}
+{% extends 'templates/template_default.php' %}
 
 {% block content %}
 
@@ -70,8 +70,8 @@
         <form action="" method="POST" >
           <input type="hidden" name="id" value="{{ user.id }}" />
           <select name="permission">
-            <option>user</option>
-            <option>admin</option>
+            <option  value="user" {% if user.permission == 'user' %} selected {% endif %}>user</option>
+            <option value="admin" {% if user.permission == 'admin' %} selected {% endif %}>admin</option>
           </select>
           <button type="submit" class="btn btn-primary">OK</button>
         </form>

@@ -1,16 +1,15 @@
-{% extends 'templates.php' %}
+{% extends 'templates/template_default.php' %}
 
 {% block content %}
 
- 
 {% for data in post %}
     <div class="post-preview">
-        <a href="index.php?action=post.post&amp;id={{ data.id }}">
+        <a href="index.php?action=post.show&amp;id={{ data.id }}">
             <h2 class="post-title">
                 {{ data.titre }}
             </h2>
             <h3 class="post-subtitle">
-                {{ data.contenu | raw }}
+                {{ data.getExtrait | raw }}
             </h3>    
         </a>
         <p class="post-meta">Publié par

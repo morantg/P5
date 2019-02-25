@@ -2,31 +2,29 @@
 
 class pageController extends Controller{
 
+	public function __construct(){
+		$this->db = DBFactory::getMysqlConnexionWithPDO();
+		$this->session = Session::getInstance();
+	}	
 	
 	public function about(){
-
-		$db = DBFactory::getMysqlConnexionWithPDO();
 		$title_about = App::getTitleAbout();
-		$session = Session::getInstance();
-		$about = new About($db);
+		$about = new About($this->db);
 		$contenu = $about->getAbout();
 
 		if(isset($_POST['about'])){
 			$about->editAbout($_POST['about']);
-			App::redirect('index.php?action=post.editPosts');
+			App::redirect('index.php?action=post.edit');
 		}
 		
-		$this->render('about_view.php',array(
+		$this->render('aboutView.php',array(
 			'session' => $_SESSION,
 			'title_about' => $title_about,
 			'contenu' => $contenu
 		));
 	}
 
-
 	public function contact(){
-
-		$session = Session::getInstance();
 		$errors = array();
 
 		if(!empty($_POST)){
@@ -38,16 +36,16 @@ class pageController extends Controller{
 			
 			if($validator->isValid()){
 				mail("gmorant@gmail.com",$_POST['objet'] ,$_POST['message']);
-				$session->setFlash('success','votre message a bien été envoyé');
+				$this->session->setFlash('success','votre message a bien été envoyé');
 				App::redirect('index.php?action=page.contact');
 			}else{
 				$errors = $validator->getErrors(); 
 			}
 		}
-		$this->render('contact_view.php',array(
+		$this->render('contactView.php',array(
 			'session' => $_SESSION,
 			'errors' => $errors,
-			'session_instance' => $session
+			'session_instance' => $this->session
 		));
 	}
 
