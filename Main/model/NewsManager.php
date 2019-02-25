@@ -10,8 +10,7 @@ class NewsManager
     $this->db = $db;
   }
 
-
-  /**
+ /**
    * Méthode permettant d'ajouter une news.
    * @param $news News La news à ajouter
    * @return void

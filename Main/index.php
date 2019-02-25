@@ -3,7 +3,6 @@
 require('../vendor/autoload.php');
 require 'model/autoload.php';
 
-
 if(isset($_GET['action'])){
     $page = $_GET['action'];
 }else{

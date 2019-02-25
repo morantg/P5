@@ -1,5 +1,4 @@
 <?php
-
 class authController extends Controller{
 
 	public function __construct(){
@@ -12,7 +11,7 @@ class authController extends Controller{
 		$this->auth->connectFromCookie($this->db);
 		
 		if($this->auth->user()){
-		App::redirect('MonCompte');
+			App::redirect('MonCompte');
 		}
 		if(!empty($_POST) && !empty($_POST['username']) && !empty($_POST['password'])){
 		$user = $this->auth->login($this->db,$_POST['username'],$_POST['password'],isset($_POST['remember']));
@@ -31,7 +30,7 @@ class authController extends Controller{
 	public function account(){
 		$this->auth->restrict();
 		$validator = new validator($_POST);
-		$admin = $validator->isAdmin($this->db,$_SESSION['auth']->id);
+	    $admin = $validator->isAdmin($this->db,$_SESSION['auth']->id);
 		
 		if(!empty($_POST)){
 			if(empty($_POST['password']) || $_POST['password'] != $_POST['password_confirm']){

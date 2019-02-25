@@ -1,6 +1,6 @@
 {% extends 'templates/template_contact.php' %}
 {% block content %}
-   <p>Want to get in touch? Fill out the form below to send me a message and I will get back to you as soon as possible!</p>
+   <p>N'hesitez pas à m'envoyer un message si vous avez la moindre question. J'y répondrai le plus rapidement possible.</p>
 
    {% if errors is not empty %}
     <div class="alert alert-danger">
@@ -19,7 +19,7 @@
             <div class="control-group">
               <div class="form-group floating-label-form-group controls">
                 <label>Email Address</label>
-                <input type="email" class="form-control" name="email" placeholder="Email Address" id="email" required data-validation-required-message="Please enter your email address.">
+                <input type="email" class="form-control" name="email" placeholder="Email" id="email" required data-validation-required-message="Please enter your email address.">
                 <p class="help-block text-danger"></p>
               </div>
             </div>

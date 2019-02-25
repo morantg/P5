@@ -82,8 +82,7 @@
         <div class="row">
           <div class="col-lg-8 col-md-10 mx-auto">
             <div class="page-heading">
-              <h1>{{ title_about }}</h1>
-              <span class="subheading">This is what I do.</span>
+              <h1>A propos de mon blog</h1>
             </div>
           </div>
         </div>

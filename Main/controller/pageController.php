@@ -8,7 +8,6 @@ class pageController extends Controller{
 	}	
 	
 	public function about(){
-		$title_about = App::getTitleAbout();
 		$about = new About($this->db);
 		$contenu = $about->getAbout();
 
@@ -20,7 +19,6 @@ class pageController extends Controller{
 		
 		$this->render('aboutView.php',array(
 			'session' => $_SESSION,
-			'title_about' => $title_about,
 			'contenu' => $contenu
 		));
 	}
