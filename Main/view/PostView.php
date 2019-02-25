@@ -2,9 +2,8 @@
 
 {% block content %}
 
-
         <div>
-            <a href="index.php">Retour à la liste des billets</a>
+            <a href="/Openclassrooms/Projet/P5/Main/News">Retour à la liste des billets</a>
         </div>
         <hr>
         <div class="post-preview">

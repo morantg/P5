@@ -4,7 +4,7 @@
 
 {% for data in post %}
     <div class="post-preview">
-        <a href="index.php?action=post.show&amp;id={{ data.id }}">
+        <a href="News/{{ data.id }}">
             <h2 class="post-title">
                 {{ data.titre }}
             </h2>

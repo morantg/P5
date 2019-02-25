@@ -12,13 +12,13 @@ class authController extends Controller{
 		$this->auth->connectFromCookie($this->db);
 		
 		if($this->auth->user()){
-		App::redirect('index.php?action=auth.account');
+		App::redirect('MonCompte');
 		}
 		if(!empty($_POST) && !empty($_POST['username']) && !empty($_POST['password'])){
 		$user = $this->auth->login($this->db,$_POST['username'],$_POST['password'],isset($_POST['remember']));
 			if ($user){
 			$this->session->setFlash('success','Vous êtes maintenant connecté');
-			App::redirect('index.php?action=auth.account');
+			App::redirect('MonCompte');
 			}else{
 			$this->session->setFlash('danger','Identifiant ou mot de passe incorrecte');
 			}
@@ -35,13 +35,13 @@ class authController extends Controller{
 		
 		if(!empty($_POST)){
 			if(empty($_POST['password']) || $_POST['password'] != $_POST['password_confirm']){
-				$_SESSION['flash']['danger'] = "les mdp ne corresponde pas";
+				$_SESSION['flash']['danger'] = "les mots de passe ne corresponde pas";
 		}else{
 			$user_id = $_SESSION['auth']->id;
 			$password= password_hash($_POST['password'],PASSWORD_BCRYPT);
 			$this->auth->passwordUpdate($password, $this->db, $user_id );
-			$_SESSION['flash']['success'] = "mdp mis a jour";
-			App::redirect('index.php?action=auth.account');
+			$_SESSION['flash']['success'] = "mot de passe mis a jour";
+			App::redirect('MonCompte');
 	    	}
 		}
 		$this->render('accountView.php',array(
@@ -54,7 +54,7 @@ class authController extends Controller{
 	public function logout(){
 		$this->auth->logout();
 		$this->session->setFlash('success','vous êtes déconnecté');
-		App::redirect('index.php?action=auth.login');
+		App::redirect('Connection');
 	}
 
 	public function register(){
@@ -65,7 +65,7 @@ class authController extends Controller{
 			$validator->isAlpha('username',"Votre pseudo n'est pas valide (alphanumérique)");
 			
 			if($validator->isValid()){
-				$validator->isUniq('username', $this->db,'users','Ce pseudo est pris');
+				$validator->isUniq('username', $this->db,'users','Ce pseudo est déja pris');
 			}
 			$validator->isEmail('email',"email non valide");
 			
@@ -77,7 +77,7 @@ class authController extends Controller{
 			if($validator->isValid()){
 				$this->auth->register($this->db,$_POST['username'],$_POST['password'],$_POST['email']);
 				$this->session->setFlash('success','email de confirmation envoyé');
-				App::redirect('index.php?action=auth.login');
+				App::redirect('Connection');
 			}else{
 				$errors = $validator->getErrors(); 
 			}
@@ -88,10 +88,10 @@ class authController extends Controller{
 	public function confirm(){
 		if($this->auth->confirm($this->db, $_GET['id'], $_GET['token'], $this->session)){
 			$this->session->setFlash('success',"compte validé");
-			App::redirect('index.php?action=auth.account');
+			App::redirect('MonCompte');
 		}else{
 			$this->session->setFlash('danger',"ce token n'est plus valide");
-			App::redirect('index.php?action=auth.login');
+			App::redirect('Connection');
 		}	
 	}
 
@@ -99,10 +99,10 @@ class authController extends Controller{
 		if(!empty($_POST) && !empty($_POST['email'])){
 			if($this->auth->resetPassword($this->db,$_POST['email'])){
 				$this->session->setFlash('success','les instructions du rappel de mot de passe vous ont été envoyées par emails');
-				App::redirect('index.php?action=auth.login');
+				App::redirect('Connection');
 			}else{
 				$this->session->setFlash('danger','pas de correspondance');
-				App::redirect('index.php?action=auth.forget');
+				App::redirect('Forget');
 			}
 		}
 		$this->render('forgetView.php',array('session_instance' => $this->session)); 
@@ -120,15 +120,15 @@ class authController extends Controller{
 						$this->auth->confirmReset($password,$_GET['id'],$this->db);
 						$this->auth->connect($user);
 						$this->session->setFlash('success',"Votre mot de passe a bien été modifié");
-						App::redirect('index.php?action=auth.account');
+						App::redirect('MonCompte');
 					}
 				}
 			}else{
 					$this->session->setFlash('danger',"ce token n'est plus valide");
-					App::redirect('index.php?action=auth.login');
+					App::redirect('Connection');
 				}
 		}else{
-				App::redirect('index.php?action=auth.login');
+				App::redirect('Connection');
 			}
 		$this->render('resetView.php');
 	}

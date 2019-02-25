@@ -10,16 +10,16 @@
     <title>Mon blog</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/Openclassrooms/projet/P5/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom fonts for this template -->
-    <link href="../vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="/Openclassrooms/projet/P5/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
 
     <!-- Custom styles for this template -->
-    <link href="css/clean-blog.min.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
+    <link href="/Openclassrooms/projet/P5/Main/css/clean-blog.min.css" rel="stylesheet">
+    <link href="/Openclassrooms/projet/P5/Main/css/style.css" rel="stylesheet">
 
   </head>
   <body>
@@ -35,40 +35,40 @@
           <ul class="navbar-nav ml-auto">
             {% if session['auth'] %}
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=page.about">A propos</a>
+              <a class="nav-link" href="/Openclassrooms/Projet/P5/Main/Apropos">A propos</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=post.list">News</a>
+              <a class="nav-link" href="/Openclassrooms/Projet/P5/Main/News">News</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=auth.account">Mon compte</a>
+              <a class="nav-link" href="/Openclassrooms/Projet/P5/Main/MonCompte">Mon compte</a>
             </li>
             {% if session['admin'] %} 
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=post.edit">Edition</a>
+              <a class="nav-link" href="/Openclassrooms/Projet/P5/Main/Edition">Edition</a>
             </li>
             {% endif %}
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=page.contact">Me contacter</a>
+              <a class="nav-link" href="/Openclassrooms/Projet/P5/Main/Contact">Me contacter</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="index.php?action=auth.logout">Se déconnecter</a>
             </li>
             {% else %}
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=page.about">A propos</a>
+              <a class="nav-link" href="/Openclassrooms/Projet/P5/Main/Apropos">A propos</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=post.list">News</a>
+              <a class="nav-link" href="/Openclassrooms/Projet/P5/Main/News">News</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=auth.register">S'inscrire</a>
+              <a class="nav-link" href="/Openclassrooms/Projet/P5/Main/Inscription">S'inscrire</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=auth.login">Se connecter</a>
+              <a class="nav-link" href="/Openclassrooms/Projet/P5/Main/Connection">Se connecter</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="index.php?action=page.contact">Me contacter</a>
+              <a class="nav-link" href="/Openclassrooms/Projet/P5/Main/Contact">Me contacter</a>
             </li>
             {% endif %}
           </ul>

@@ -48,19 +48,19 @@ class postController extends Controller{
 		{
 	  	$this->postManager->delete((int) $_GET['supprimer']);
 	  	$this->session->setFlash('success','La news a bien été supprimée !');
-	  	App::redirect('index.php?action=post.edit');
+	  	App::redirect('Edition');
 		}
 		if (isset($_POST['permission'])){
 			
 			$this->auth->changer_permission($this->db, $_POST['permission'], $_POST['id']);
 			$this->session->setFlash('success','La nouvelle permission a bien été adoptée !');
-			App::redirect('index.php?action=post.edit');
+			App::redirect('Edition');
 		}
 		if (isset($_POST['ids'])){
 
 			$this->commentManager->publication($_POST['ids']);
 			$this->session->setFlash('success','les commentaires ont bien été publiés !');
-			App::redirect('index.php?action=post.edit');
+			App::redirect('Edition');
 		}
 		if (isset($_POST['auteur']))
 		{
@@ -85,7 +85,7 @@ class postController extends Controller{
 		   	 	}else{
 		   	 		$this->session->setFlash('success','La news a bien été modifiée !');
 		   	 	}
-		   	 	App::redirect('index.php?action=post.edit');
+		   	 	App::redirect('Edition');
 	    	}else{
 	    		$erreurs = $news->erreurs();
 			}
@@ -104,17 +104,15 @@ class postController extends Controller{
 	public function addComment(){
 		if (empty($_POST['comment'])) {
 	        $this->session->setFlash('danger','commentaire vide');
-	        App::redirect('index.php?action=post.show&id=' . $_GET['id']);
+	        App::redirect('/Openclassrooms/Projet/P5/Main/News/' . $_GET['id']);
 		}
 		$affectedLines = $this->commentManager->postComment($_GET['id'], $_POST['author'], $_POST['comment']);
 		if ($affectedLines === false) {
 	        throw new Exception('Impossible d\'ajouter le commentaire !');
 	    }else {
 	    	$this->session->setFlash('success','votre message a été soumis a la publication');
-	    	App::redirect('index.php?action=post.show&id=' . $_GET['id']);
+	    	App::redirect('/Openclassrooms/Projet/P5/Main/News/' . $_GET['id']);
 		}
-		$this->render('PostView.php',array(
-			'session' => $_SESSION
-		));
+		$this->render('PostView.php',array('session' => $_SESSION));
 	}
 }

@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<a href="index.php?action=auth.register">Vous n'avez pas de compte? Créer en un ici.</a>
+<a href="Inscription">Vous n'avez pas de compte? Créer en un ici.</a>
 
 <h1>Se connecter</h1>
 
@@ -15,7 +15,7 @@
 		<label for="password">Mot de passe</label>
 		<input type="password" name="password" class="form-control" placeholder="Mot de passe" />
 	</div>
-	<br><a href="index.php?action=auth.forget">J'ai oublié mon mot de pase</a><br><br>
+	<br><a href="Forget">J'ai oublié mon mot de pase</a><br><br>
 	<div class="form-group">
 		<label>
 			<input type="checkbox" name="remember" value="1"/> Se souvenir de moi

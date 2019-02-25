@@ -14,7 +14,8 @@ class pageController extends Controller{
 
 		if(isset($_POST['about'])){
 			$about->editAbout($_POST['about']);
-			App::redirect('index.php?action=post.edit');
+			$this->session->setFlash('success','La section a propos a bien été éditée');
+			App::redirect('Edition');
 		}
 		
 		$this->render('aboutView.php',array(
@@ -37,7 +38,7 @@ class pageController extends Controller{
 			if($validator->isValid()){
 				mail("gmorant@gmail.com",$_POST['objet'] ,$_POST['message']);
 				$this->session->setFlash('success','votre message a bien été envoyé');
-				App::redirect('index.php?action=page.contact');
+				App::redirect('Contact');
 			}else{
 				$errors = $validator->getErrors(); 
 			}
