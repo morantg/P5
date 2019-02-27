@@ -21,8 +21,8 @@ class postController extends Controller{
 	}
 
 	public function show(){
-		$post = $this->postManager->getUnique((int)$_GET['id']);
-    	$id = filter_input(INPUT_GET, 'id');
+		$id = filter_input(INPUT_GET, 'id');
+		$post = $this->postManager->getUnique($id);
     	$comments = $this->commentManager->getComments($id);
 
 		$this->render('PostView.php',array(
@@ -41,41 +41,49 @@ class postController extends Controller{
 		$users = $this->auth->users($this->db);
 		$comments = $this->commentManager->allCommentsUnpublished();
 
-		if (isset($_GET['modifier']))
+		$modifier = filter_input(INPUT_GET, 'modifier');
+		$supprimer = filter_input(INPUT_GET, 'supprimer');
+		$permission = filter_input(INPUT_POST, 'permission');
+		$ids = filter_input(INPUT_POST, 'ids');
+		$auteur = filter_input(INPUT_POST, 'auteur');
+		$id = filter_input(INPUT_POST, 'id');
+
+		if ($modifier)
 		{
-	  	$news = $this->postManager->getUnique((int) $_GET['modifier']);
+	  	$news = $this->postManager->getUnique($modifier);
 		}
-		if (isset($_GET['supprimer']))
+		if ($supprimer)
 		{
-	  	$this->postManager->delete((int) $_GET['supprimer']);
+	  	$this->postManager->delete($supprimer);
 	  	$this->session->setFlash('success','La news a bien été supprimée !');
 	  	App::redirect('Edition');
 		}
-		if (isset($_POST['permission'])){
-			
-			$this->auth->changer_permission($this->db, $_POST['permission'], $_POST['id']);
+		if ($permission){
+			$id = filter_input(INPUT_POST, 'id');
+			$this->auth->changer_permission($this->db, $permission, $id);
 			$this->session->setFlash('success','La nouvelle permission a bien été adoptée !');
 			App::redirect('Edition');
 		}
-		if (isset($_POST['ids'])){
-
-			$this->commentManager->publication($_POST['ids']);
+		if ($ids){
+  			$this->commentManager->publication($ids);
 			$this->session->setFlash('success','les commentaires ont bien été publiés !');
 			App::redirect('Edition');
 		}
-		if (isset($_POST['auteur']))
+		if ($auteur)
 		{
+	  		$titre = filter_input(INPUT_POST, 'titre');
+			$contenu = filter_input(INPUT_POST, 'contenu');
 	  		$news = new News(
 	    		[
-	      		'auteur' => $_POST['auteur'],
-	      		'titre' => $_POST['titre'],
-	      		'contenu' => $_POST['contenu']
+	      		'auteur' => $auteur,
+	      		'titre' => $titre,
+	      		'contenu' => $contenu
 	    		]
 	  		);
 	  		
-	  		if (isset($_POST['id']))
+	  		if ($id)
 	  		{
-	   	 	$news->setId($_POST['id']);
+	  		 $news->setId($id);
 	  		}
 	  
 	  		if ($news->isValid())
