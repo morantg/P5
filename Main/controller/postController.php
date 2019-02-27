@@ -22,7 +22,8 @@ class postController extends Controller{
 
 	public function show(){
 		$post = $this->postManager->getUnique((int)$_GET['id']);
-    	$comments = $this->commentManager->getComments($_GET['id']);
+    	$id = filter_input(INPUT_GET, 'id');
+    	$comments = $this->commentManager->getComments($id);
 
 		$this->render('PostView.php',array(
 		'session' => $_SESSION,
