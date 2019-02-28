@@ -1,10 +1,14 @@
 <?php
 class authController extends Controller{
 
-	public function __construct(){
-		$this->db = DBFactory::getMysqlConnexionWithPDO();
-		$this->auth = App::getAuth();
-		$this->session = Session::getInstance();
+	private $db;
+	private $auth;
+	private $session;
+
+	public function __construct($db, $auth, $session){
+		$this->db = $db;
+		$this->auth = $auth;
+		$this->session = $session;
 	}
 
 	public function login(){
@@ -19,8 +23,6 @@ class authController extends Controller{
 		
 		if(!empty($_POST) && $username && $password){
 		$user = $this->auth->login($this->db, $username, $password,isset($remember));
-		    
-			$test = $this->session->readWithParam('auth','permission');
 		    if ($user){
 			$this->session->setFlash('success','Vous êtes maintenant connecté');
 			App::redirect('MonCompte');

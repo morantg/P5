@@ -84,14 +84,8 @@ class Auth{
    * @return bool
    */
 	public function restrict_admin($db){
-		/*$admin = Validator::isAdmin($db,$_SESSION['auth']->id);
-		if (!$admin){
-			$this->session->setFlash('danger',$this->options['restriction_msg']);
-			App::redirect('index.php?action=post.list');
-		}
-		return $admin;*/
 		$permission = $this->session->readWithParam('auth','permission');
-		if (!$permission === 'admin' && !$permission === 'superadmin'){
+		if ($permission === 'user'){
 			$this->session->setFlash('danger',$this->options['restriction_msg']);
 			App::redirect('News');
 		}

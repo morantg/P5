@@ -2,12 +2,19 @@
 
 class postController extends Controller{
 
-	public function __construct(){
-		$this->db = DBFactory::getMysqlConnexionWithPDO();
-		$this->postManager = new NewsManager($this->db);
-		$this->commentManager = new CommentManager($this->db);
-		$this->auth = App::getAuth();
-		$this->session = Session::getInstance();
+	private $db;
+	private $postManager;
+	private $commentManager;
+	private $auth;
+	private $session;
+
+
+	public function __construct($db, $postManager, $commentManager, $auth, $session){
+		$this->db = $db;
+		$this->postManager = $postManager;
+		$this->commentManager = $commentManager;
+		$this->auth = $auth;
+		$this->session = $session;
 	}
 
 	public function list(){
@@ -40,10 +47,10 @@ class postController extends Controller{
 		$erreurs = null;
 		$this->auth->restrict();
 		$this->auth->restrict_admin($this->db);
+		
 		$users = $this->auth->users($this->db);
 		$comments = $this->commentManager->allCommentsUnpublished();
 		
-
 		$modifier = filter_input(INPUT_GET, 'modifier');
 		$supprimer = filter_input(INPUT_GET, 'supprimer');
 		$permission = filter_input(INPUT_POST, 'permission');

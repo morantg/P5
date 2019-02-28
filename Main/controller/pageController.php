@@ -2,9 +2,12 @@
 
 class pageController extends Controller{
 
-	public function __construct(){
-		$this->db = DBFactory::getMysqlConnexionWithPDO();
-		$this->session = Session::getInstance();
+	private $db;
+	private $session;
+
+	public function __construct($db, $session){
+		$this->db = $db;
+		$this->session = $session;
 	}	
 	
 	public function about(){
