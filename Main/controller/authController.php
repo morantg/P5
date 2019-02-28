@@ -13,10 +13,14 @@ class authController extends Controller{
 		if($this->auth->user()){
 			App::redirect('MonCompte');
 		}
-		if(!empty($_POST) && !empty($_POST['username']) && !empty($_POST['password'])){
-		$user = $this->auth->login($this->db,$_POST['username'],$_POST['password'],isset($_POST['remember']));
+		$username = filter_input(INPUT_POST, 'username');
+		$password = filter_input(INPUT_POST, 'password');
+		$remember = filter_input(INPUT_POST, 'remember');
+		
+		if(!empty($_POST) && $username && $password){
+		$user = $this->auth->login($this->db, $username, $password,isset($remember));
 		    
-			$test = $this->session->read2('auth','permission');
+			$test = $this->session->readWithParam('auth','permission');
 		    if ($user){
 			$this->session->setFlash('success','Vous êtes maintenant connecté');
 			App::redirect('MonCompte');
@@ -32,14 +36,16 @@ class authController extends Controller{
 	public function account(){
 		$this->auth->restrict();
 		$validator = new validator($_POST);
+		$password = filter_input(INPUT_POST, 'password');
+		$password_confirm = filter_input(INPUT_POST, 'password_confirm');
 	    
 		if(!empty($_POST)){
-			if(empty($_POST['password']) || $_POST['password'] != $_POST['password_confirm']){
+			if(empty($password) || $password != $password_confirm){
 				$_SESSION['flash']['danger'] = "les mots de passe ne corresponde pas";
 		}else{
 			$user_id = $_SESSION['auth']->id;
-			$password= password_hash($_POST['password'],PASSWORD_BCRYPT);
-			$this->auth->passwordUpdate($password, $this->db, $user_id );
+			$password_hash= password_hash($password,PASSWORD_BCRYPT);
+			$this->auth->passwordUpdate($password_hash, $this->db, $user_id );
 			$_SESSION['flash']['success'] = "mot de passe mis a jour";
 			App::redirect('MonCompte');
 	    	}
@@ -86,7 +92,9 @@ class authController extends Controller{
 	}
 
 	public function confirm(){
-		if($this->auth->confirm($this->db, $_GET['id'], $_GET['token'], $this->session)){
+		$id = filter_input(INPUT_GET, 'id');
+		$token = filter_input(INPUT_GET, 'token');
+		if($this->auth->confirm($this->db, $id, $token, $this->session)){
 			$this->session->setFlash('success',"compte validé");
 			App::redirect('MonCompte');
 		}else{
@@ -96,8 +104,9 @@ class authController extends Controller{
 	}
 
 	public function forget(){
-		if(!empty($_POST) && !empty($_POST['email'])){
-			if($this->auth->resetPassword($this->db,$_POST['email'])){
+		$email = filter_input(INPUT_POST, 'email');
+		if($email){
+			if($this->auth->resetPassword($this->db,$email)){
 				$this->session->setFlash('success','les instructions du rappel de mot de passe vous ont été envoyées par emails');
 				App::redirect('Connection');
 			}else{
@@ -109,15 +118,17 @@ class authController extends Controller{
 	}
 
 	public function reset_password(){
-		if(isset($_GET['id']) && isset($_GET['token'])){
-		$user = $this->auth->checkResetToken($this->db,$_GET['id'],$_GET['token']);
+		$id = filter_input(INPUT_GET, 'id');
+		$token = filter_input(INPUT_GET, 'token');
+		if($id && $token){
+		$user = $this->auth->checkResetToken($this->db, $id, $token);
 			if($user){
 				if(!empty($_POST)){
 					$validator = new Validator($_POST);
 					$validator->isConfirmed('password');
 					if($validator->isValid()){
 						$password = $this->auth->hashPassword($_POST['password']);
-						$this->auth->confirmReset($password,$_GET['id'],$this->db);
+						$this->auth->confirmReset($password, $id, $this->db);
 						$this->auth->connect($user);
 						$this->session->setFlash('success',"Votre mot de passe a bien été modifié");
 						App::redirect('MonCompte');
