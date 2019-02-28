@@ -58,6 +58,16 @@ class Session{
 
   /**
    * @param $key string
+   * @param $param string
+   * @return string
+   */
+	public function readWithParam($key, $param){
+		return isset($_SESSION[$key]->$param) ? $_SESSION[$key]->$param : null;
+	}
+
+
+  /**
+   * @param $key string
    */
 	public function delete ($key){
 		unset($_SESSION[$key]);

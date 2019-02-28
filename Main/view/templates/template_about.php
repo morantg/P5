@@ -43,7 +43,7 @@
             <li class="nav-item">
               <a class="nav-link" href="/Openclassrooms/Projet/P5/Main/MonCompte">Mon compte</a>
             </li>
-            {% if session['admin'] %} 
+            {% if session['auth'].permission == 'superadmin' or session['auth'].permission == 'admin'  %} 
             <li class="nav-item">
               <a class="nav-link" href="/Openclassrooms/Projet/P5/Main/Edition">Edition</a>
             </li>

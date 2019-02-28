@@ -56,7 +56,7 @@
   {% endfor %}  
 </table>
 
-{% if session['superadmin'] %} 
+{% if session['auth'].permission == 'superadmin' %} 
 
 <br>
 <h3> Liste des utilisateurs </h3>

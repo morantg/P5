@@ -97,40 +97,4 @@ class Validator{
 	public function getErrors(){
 		return $this->errors;
 	}
-
-  /**
-   * @param $db PDO
-   * @param $user_id in
-   * @return bool
-   */
-	public static function isAdmin($db,$user_id){
-		$req = $db->prepare('SELECT permission FROM users WHERE id = ?');
-		$req->execute([$user_id]);
-		$user= $req->fetch();
-		
-		if($user->permission == 'admin' || $user->permission == 'superadmin'){
-			$auth = App::getAuth();
-			return $_SESSION['admin'] = true;
-		}else{
-			return $_SESSION['admin'] = false;
-		}
-	}
-
-  /**
-   * @param $db PDO
-   * @param $user_id in
-   * @return bool
-   */
-	public static function isSuperAdmin($db,$user_id){
-		$req = $db->prepare('SELECT permission FROM users WHERE id = ?');
-		$req->execute([$user_id]);
-		$user= $req->fetch();
-		
-		if($user->permission == 'superadmin'){
-			$auth = App::getAuth();
-			return $_SESSION['superadmin'] = true;
-		}else{
-			return $_SESSION['superadmin'] = false;
-		}
-	}
 }

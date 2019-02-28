@@ -74,7 +74,7 @@ class Auth{
 	public function restrict(){
 		if (!$this->session->read('auth')){
 			$this->session->setFlash('danger',$this->options['restriction_msg']);
-			App::redirect('index.php?action=auth.login');
+			App::redirect('Connection');
 		}
 	}
 
@@ -84,22 +84,17 @@ class Auth{
    * @return bool
    */
 	public function restrict_admin($db){
-		$admin = Validator::isAdmin($db,$_SESSION['auth']->id);
+		/*$admin = Validator::isAdmin($db,$_SESSION['auth']->id);
 		if (!$admin){
 			$this->session->setFlash('danger',$this->options['restriction_msg']);
-			App::redirect('index.php?action=post.listPosts');
+			App::redirect('index.php?action=post.list');
 		}
-		return $admin;
-	}
-
-  /**
-   * Bloque la page si l'utilisateur n'est pas superadministrateur 
-   * @param $bd PDO
-   * @return bool
-   */
-	public function restrict_superadmin($db){
-		$admin = Validator::isSuperAdmin($db,$_SESSION['auth']->id);
-		return $admin;
+		return $admin;*/
+		$permission = $this->session->readWithParam('auth','permission');
+		if (!$permission === 'admin' && !$permission === 'superadmin'){
+			$this->session->setFlash('danger',$this->options['restriction_msg']);
+			App::redirect('News');
+		}
 	}
 
   /**

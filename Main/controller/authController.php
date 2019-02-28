@@ -15,7 +15,9 @@ class authController extends Controller{
 		}
 		if(!empty($_POST) && !empty($_POST['username']) && !empty($_POST['password'])){
 		$user = $this->auth->login($this->db,$_POST['username'],$_POST['password'],isset($_POST['remember']));
-			if ($user){
+		    
+			$test = $this->session->read2('auth','permission');
+		    if ($user){
 			$this->session->setFlash('success','Vous êtes maintenant connecté');
 			App::redirect('MonCompte');
 			}else{
@@ -30,8 +32,7 @@ class authController extends Controller{
 	public function account(){
 		$this->auth->restrict();
 		$validator = new validator($_POST);
-	    $admin = $validator->isAdmin($this->db,$_SESSION['auth']->id);
-		
+	    
 		if(!empty($_POST)){
 			if(empty($_POST['password']) || $_POST['password'] != $_POST['password_confirm']){
 				$_SESSION['flash']['danger'] = "les mots de passe ne corresponde pas";
@@ -45,8 +46,8 @@ class authController extends Controller{
 		}
 		$this->render('accountView.php',array(
 			'session' => $_SESSION,
-			'session_instance' => $this->session,
-			'admin' => $admin 
+			'session_instance' => $this->session
+			
 		));
 	}
 

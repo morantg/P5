@@ -12,9 +12,10 @@ class postController extends Controller{
 
 	public function list(){
 		$posts = $this->postManager->getList();
+		$session_user = $_SESSION;
       	
       	$this->render('listView.php',array(
-			'session' => $_SESSION,
+			'session' => $session_user,
 			'post'    => $posts,
 			'session_instance' => $this->session
 		));
@@ -24,9 +25,10 @@ class postController extends Controller{
 		$id = filter_input(INPUT_GET, 'id');
 		$post = $this->postManager->getUnique($id);
     	$comments = $this->commentManager->getComments($id);
+    	$session_user = $_SESSION;
 
 		$this->render('PostView.php',array(
-		'session' => $_SESSION,
+		'session' => $session_user,
 		'post'    => $post,
 		'comments'=> $comments,
 		'session_instance' => $this->session
@@ -36,10 +38,11 @@ class postController extends Controller{
 	public function edit(){
 		$news = null;
 		$erreurs = null;
+		$this->auth->restrict();
 		$this->auth->restrict_admin($this->db);
-		$this->auth->restrict_superadmin($this->db);
 		$users = $this->auth->users($this->db);
 		$comments = $this->commentManager->allCommentsUnpublished();
+		
 
 		$modifier = filter_input(INPUT_GET, 'modifier');
 		$supprimer = filter_input(INPUT_GET, 'supprimer');
@@ -47,6 +50,7 @@ class postController extends Controller{
 		$ids = filter_input(INPUT_POST, 'ids');
 		$auteur = filter_input(INPUT_POST, 'auteur');
 		$id = filter_input(INPUT_POST, 'id');
+		$session_user = $_SESSION;
 
 		if ($modifier)
 		{
@@ -100,7 +104,7 @@ class postController extends Controller{
 			}
 		}
 		$this->render('adminView.php',array(
-			'session' => $_SESSION,
+			'session' => $session_user,
 			'new'    => $news,
 			'manager' => $this->postManager,
 			'session_instance' => $this->session,
@@ -111,6 +115,7 @@ class postController extends Controller{
 	}
 
 	public function addComment(){
+		$session_user = $_SESSION;
 		if (empty($_POST['comment'])) {
 	        $this->session->setFlash('danger','commentaire vide');
 	        App::redirect('/Openclassrooms/Projet/P5/Main/News/' . $_GET['id']);
@@ -122,6 +127,6 @@ class postController extends Controller{
 	    	$this->session->setFlash('success','votre message a été soumis a la publication');
 	    	App::redirect('/Openclassrooms/Projet/P5/Main/News/' . $_GET['id']);
 		}
-		$this->render('PostView.php',array('session' => $_SESSION));
+		$this->render('PostView.php',array('session' => $session_user));
 	}
 }
