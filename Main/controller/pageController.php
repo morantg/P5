@@ -13,9 +13,9 @@ class pageController extends Controller{
 	public function about(){
 		$about = new About($this->db);
 		$contenu = $about->getAbout();
-
-		if(isset($_POST['about'])){
-			$about->editAbout($_POST['about']);
+		$about = filter_input(INPUT_POST, 'about');
+		if($about){
+			$about->editAbout($about);
 			$this->session->setFlash('success','La section a propos a bien été éditée');
 			App::redirect('Edition');
 		}
@@ -50,6 +50,4 @@ class pageController extends Controller{
 			'session_instance' => $this->session
 		));
 	}
-
-
 }

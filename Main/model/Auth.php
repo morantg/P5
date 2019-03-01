@@ -83,7 +83,7 @@ class Auth{
    * @param $bd PDO
    * @return bool
    */
-	public function restrict_admin($db){
+	public function restrict_admin(){
 		$permission = $this->session->readWithParam('auth','permission');
 		if ($permission === 'user'){
 			$this->session->setFlash('danger',$this->options['restriction_msg']);
@@ -127,8 +127,8 @@ class Auth{
    * @param $db PDO
    */
 	public function connectFromCookie($db){
-		if (isset($_COOKIE['remember']) && !$this->user()) {
-			$remember_token = $_COOKIE['remember'];
+		$remember_token= filter_input(INPUT_COOKIE, 'remember');
+		if ($remember_token && !$this->user()) {
 			$parts = explode('==', $remember_token);
 			$user_id = $parts[0];
 	
@@ -170,10 +170,8 @@ class Auth{
 				$this->remember($db,$user->id);
 			}
 			return $req;
-			
-		}else{
-			return false; 
 		}
+		return false; 
 	}
 
   /**
@@ -225,7 +223,7 @@ class Auth{
 			$req = $db->prepare('UPDATE users SET reset_token = ?, reset_at = NOW() WHERE id = ?');
 			$req->execute([$reset_token,$user->id]);
 						
-			mail($_POST['email'], "réinitialisation de votre mot de passe ","afin de réinitialiser votre mot de passe merci de cliquer sur ce lien\n\nlocalhost/Openclassrooms/Projet/P5/Main/index.php?action=auth.reset_password&id={$user->id}&token=$reset_token");
+			mail($email, "réinitialisation de votre mot de passe ","afin de réinitialiser votre mot de passe merci de cliquer sur ce lien\n\nlocalhost/Openclassrooms/Projet/P5/Main/index.php?action=auth.reset_password&id={$user->id}&token=$reset_token");
 			return $user;
 		}
 		return false;

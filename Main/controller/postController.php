@@ -125,14 +125,17 @@ class postController extends Controller{
 		$session_user = $_SESSION;
 		if (empty($_POST['comment'])) {
 	        $this->session->setFlash('danger','commentaire vide');
-	        App::redirect('/Openclassrooms/Projet/P5/Main/News/' . $_GET['id']);
+	        $news_id = filter_input(INPUT_GET, 'id');
+	        App::redirect('/Openclassrooms/Projet/P5/Main/News/' . $news_id;
 		}
-		$affectedLines = $this->commentManager->postComment($_GET['id'], $_POST['author'], $_POST['comment']);
+		$author = filter_input(INPUT_POST, 'author');
+		$comment = filter_input(INPUT_POST, 'comment');
+		$affectedLines = $this->commentManager->postComment($news_id, $author, $comment);
 		if ($affectedLines === false) {
 	        throw new Exception('Impossible d\'ajouter le commentaire !');
 	    }else {
 	    	$this->session->setFlash('success','votre message a été soumis a la publication');
-	    	App::redirect('/Openclassrooms/Projet/P5/Main/News/' . $_GET['id']);
+	    	App::redirect('/Openclassrooms/Projet/P5/Main/News/' . $news_id);
 		}
 		$this->render('PostView.php',array('session' => $session_user));
 	}
