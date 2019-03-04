@@ -1,0 +1,18 @@
+RewriteEngine On
+
+RewriteRule Apropos index.php?action=page.about
+RewriteRule News/([0-9]+) index.php?action=post.show&id=$1
+RewriteRule News index.php
+RewriteRule MonCompte index.php?action=auth.account
+RewriteRule Contact index.php?action=page.contact
+RewriteRule Edition index.php?action=post.edit
+RewriteRule Inscription index.php?action=auth.register
+RewriteRule Connection index.php?action=auth.login
+RewriteRule Forget index.php?action=auth.forget
+RewriteRule Modification/([0-9]+) index.php?action=post.edit&modifier=$1
+RewriteRule NotFound index.php?action=page.notFound
+
+ErrorDocument 404 /index.php?action=page.notFound
+
+
+

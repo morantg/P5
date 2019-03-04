@@ -3,7 +3,7 @@
 {% block content %}
 
         <div>
-            <a href="/Main/News">Retour à la liste des billets</a>
+            <a href="/News">Retour à la liste des billets</a>
         </div>
         <hr>
         <div class="post-preview">
@@ -39,7 +39,7 @@
         </form>
         <br>
         {% else %}
-        <a href="index.php?action=auth.login">Connectez vous pour laisser un message.</a><br><br>
+        <a href="/Connection">Connectez vous pour laisser un message.</a><br><br>
         {% endif %}
 
         {% for comment in comments %}

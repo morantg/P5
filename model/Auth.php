@@ -10,25 +10,7 @@ class Auth{
 		$this->session = $session;
 	}
 
-  /**
-   * Crée une clé de hachage pour un mot de passe
-   * @param $password string
-   * @return string 
-   */
-	public function hashPassword($password){
-		return password_hash($password, PASSWORD_BCRYPT);
-	}
-
-  /**
-   * @param $password string
-   * @param $bd PDO
-   * @param $id int 
-   */
-	public function passwordUpdate($password, $mysql_db, $user_id){
-		$req = $mysql_db->prepare('UPDATE users SET password = ? WHERE id = ?');
-		$req->execute([$password, $user_id]);
-	}
-
+  
   /**
    * Méthode permettant d'enregister un utilisateur et de lui envoyer un mail de confirmation
    * @param $db PDO 
@@ -44,7 +26,7 @@ class Auth{
 		$req->execute([$username,$password, $email,$token]);
 		$user_id = $mysql_db->lastInsertId();
 
-		mail($email, "confirmation compte","afin de valider votre compte merci de cliquer sur ce lien\n\nhttp://projet5.local/Main/index.php?action=auth.confirm&id=$user_id&token=$token");
+		mail($email, "confirmation compte","afin de valider votre compte merci de cliquer sur ce lien\n\nhttp://projet5.local/index.php?action=auth.confirm&id=$user_id&token=$token");
 	}
 
   /**
@@ -207,6 +189,25 @@ class Auth{
 		setcookie('remember',NULL,-1);
 		$this->session->delete('auth');
 	}
+  
+  /**
+   * Crée une clé de hachage pour un mot de passe
+   * @param $password string
+   * @return string 
+   */
+	public function hashPassword($password){
+		return password_hash($password, PASSWORD_BCRYPT);
+	}
+  
+  /**
+   * @param $password string
+   * @param $bd PDO
+   * @param $id int 
+   */
+	public function passwordUpdate($password, $mysql_db, $user_id){
+		$req = $mysql_db->prepare('UPDATE users SET password = ? WHERE id = ?');
+		$req->execute([$password, $user_id]);
+	}
 
   /**
    * Envoi un mail a l'utilisateur en cas de perte de mot de passe pour qu'il puisse en choisir un nouveau
@@ -223,7 +224,7 @@ class Auth{
 			$req = $mysql_db->prepare('UPDATE users SET reset_token = ?, reset_at = NOW() WHERE id = ?');
 			$req->execute([$reset_token,$user->id]);
 						
-			mail($email, "réinitialisation de votre mot de passe ","afin de réinitialiser votre mot de passe merci de cliquer sur ce lien\n\nhttp://projet5.local/Main/index.php?action=auth.reset_password&id={$user->id}&token=$reset_token");
+			mail($email, "réinitialisation de votre mot de passe ","afin de réinitialiser votre mot de passe merci de cliquer sur ce lien\n\nhttp://projet5.local/index.php?action=auth.reset_password&id={$user->id}&token=$reset_token");
 			return $user;
 		}
 		return false;
@@ -239,7 +240,7 @@ class Auth{
 		$req = $mysql_db->prepare('UPDATE users SET password = ?, reset_at = NULL, reset_token = NULL WHERE id = ?');
 		$req->execute([$password,$user_id]);
 	}
-	
+  
   /**
    * @param $db PDO
    * @param $user_id int

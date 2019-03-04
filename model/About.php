@@ -2,8 +2,7 @@
 
 class About{
 	
-
-	private $db;
+  private $db;
 
     public function __construct(PDO $db)
     {

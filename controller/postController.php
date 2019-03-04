@@ -32,7 +32,7 @@ class postController extends Controller{
 		$id = filter_input(INPUT_GET, 'id');
 		$post = $this->postManager->getUnique($id);
 		if(!$post){
-			App::redirect('index.php?action=page.notFound');
+			App::redirect('NotFound');
 		}
     	$comments = $this->commentManager->getComments($id);
     	$session_user = $_SESSION;
@@ -129,7 +129,7 @@ class postController extends Controller{
 		if (empty($_POST['comment'])) {
 	        $this->session->setFlash('danger','commentaire vide');
 	        $news_id = filter_input(INPUT_GET, 'id');
-	        App::redirect('/Main/News/' . $news_id);
+	        App::redirect('/News/' . $news_id);
 		}
 		$author = filter_input(INPUT_POST, 'author');
 		$comment = filter_input(INPUT_POST, 'comment');
@@ -138,7 +138,7 @@ class postController extends Controller{
 	        throw new Exception('Impossible d\'ajouter le commentaire !');
 	    }else {
 	    	$this->session->setFlash('success','votre message a été soumis a la publication');
-	    	App::redirect('/Main/News/' . $news_id);
+	    	App::redirect('/News/' . $news_id);
 		}
 		$this->render('PostView.php',array('session' => $session_user));
 	}

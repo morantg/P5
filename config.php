@@ -5,3 +5,5 @@ return array(
     "db_host" => "localhost",
     "db_name" => "p5_blog"
 );
+
+
