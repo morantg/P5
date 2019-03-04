@@ -7,7 +7,7 @@ class App{
    * @return Auth 
    */
 	static function getAuth(){
-		return new Auth(Session::getInstance(),['restriction_msg' => 'pas le droit d accès']);
+		return new Auth(Session::getInstance());
 	}
   
   /**

@@ -3,7 +3,7 @@
 {% block content %}
 
         <div>
-            <a href="/Openclassrooms/Projet/P5/Main/News">Retour à la liste des billets</a>
+            <a href="/Main/News">Retour à la liste des billets</a>
         </div>
         <hr>
         <div class="post-preview">

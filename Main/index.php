@@ -1,5 +1,4 @@
 <?php
-
 require '../vendor/autoload.php';
 require 'model/autoload.php';
 
@@ -27,7 +26,6 @@ if($controller === 'authController'){
 	$controller = new $controller(DBFactory::getMysqlConnexionWithPDO(), Session::getInstance());
 	$controller->$action();
 }
-
 		
 
 

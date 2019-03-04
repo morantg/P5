@@ -10,16 +10,16 @@
     <title>Mon blog</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/Openclassrooms/projet/P5/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom fonts for this template -->
-    <link href="/Openclassrooms/projet/P5/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
 
     <!-- Custom styles for this template -->
-    <link href="/Openclassrooms/projet/P5/Main/css/clean-blog.min.css" rel="stylesheet">
-    <link href="/Openclassrooms/projet/P5/Main/css/style.css" rel="stylesheet">
+    <link href="/Main/css/clean-blog.min.css" rel="stylesheet">
+    <link href="/Main/css/style.css" rel="stylesheet">
 
   </head>
   <body>
@@ -35,40 +35,40 @@
           <ul class="navbar-nav ml-auto">
             {% if session['auth'] %}
             <li class="nav-item">
-              <a class="nav-link" href="/Openclassrooms/Projet/P5/Main/Apropos">A propos</a>
+              <a class="nav-link" href="/Main/Apropos">A propos</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/Openclassrooms/Projet/P5/Main/News">News</a>
+              <a class="nav-link" href="/Main/News">News</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/Openclassrooms/Projet/P5/Main/MonCompte">Mon compte</a>
+              <a class="nav-link" href="/Main/MonCompte">Mon compte</a>
             </li>
             {% if session['auth'].permission == 'superadmin' or session['auth'].permission == 'admin'  %} 
             <li class="nav-item">
-              <a class="nav-link" href="/Openclassrooms/Projet/P5/Main/Edition">Edition</a>
+              <a class="nav-link" href="/Main/Edition">Edition</a>
             </li>
             {% endif %}
             <li class="nav-item">
-              <a class="nav-link" href="/Openclassrooms/Projet/P5/Main/Contact">Me contacter</a>
+              <a class="nav-link" href="/Main/Contact">Me contacter</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="index.php?action=auth.logout">Se déconnecter</a>
             </li>
             {% else %}
             <li class="nav-item">
-              <a class="nav-link" href="/Openclassrooms/Projet/P5/Main/Apropos">A propos</a>
+              <a class="nav-link" href="/Main/Apropos">A propos</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/Openclassrooms/Projet/P5/Main/News">News</a>
+              <a class="nav-link" href="/Main/News">News</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/Openclassrooms/Projet/P5/Main/Inscription">S'inscrire</a>
+              <a class="nav-link" href="/Main/Inscription">S'inscrire</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/Openclassrooms/Projet/P5/Main/Connection">Se connecter</a>
+              <a class="nav-link" href="/Main/Connection">Se connecter</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/Openclassrooms/Projet/P5/Main/Contact">Me contacter</a>
+              <a class="nav-link" href="/Main/Contact">Me contacter</a>
             </li>
             {% endif %}
           </ul>
@@ -76,7 +76,7 @@
       </div>
     </nav>
    <!-- Page Header -->
-    <header class="masthead" style="background-image: url('img/about-bg.jpg')">
+    <header class="masthead" style="background-image: url('/Main/img/about-bg.jpg')">
       <div class="overlay"></div>
       <div class="container">
         <div class="row">
@@ -135,11 +135,11 @@
     </footer>
 
     <!-- Bootstrap core JavaScript -->
-    <script src="../vendor/jquery/jquery.min.js"></script>
-    <script src="../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/vendor/jquery/jquery.min.js"></script>
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
     <!-- Custom scripts for this template -->
-    <script src="js/clean-blog.min.js"></script>
+    <script src="/Main/js/clean-blog.min.js"></script>
     <script src="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=expsirpgv36h6sccv64i0qrvz1cvboujrff5y5okhma2g5oz"></script>
     <script>tinymce.init({ 
       mode : "specific_textareas",

@@ -51,7 +51,7 @@
         
   {% for new in manager.getList %}
 
-    <tr><td>{{ new.auteur }}</td><td>{{ new.titre }}</td><td>{{ new.dateAjout.format('d/m/Y à H:i') }}</td><td>{{ (new.dateAjout == new.dateModif) ? '-' : new.dateModif.format('d/m/Y à H:i') }}</td><td><a href="/Openclassrooms/projet/P5/Main/Modification/{{ new.id }}">Modifier</a> | <a href="index.php?action=post.edit&supprimer={{ new.id }}">Supprimer</a></td></tr>
+    <tr><td>{{ new.auteur }}</td><td>{{ new.titre }}</td><td>{{ new.dateAjout.format('d/m/Y à H:i') }}</td><td>{{ (new.dateAjout == new.dateModif) ? '-' : new.dateModif.format('d/m/Y à H:i') }}</td><td><a href="/Main/Modification/{{ new.id }}">Modifier</a>  <a href="index.php?action=post.edit&supprimer={{ new.id }}">Supprimer</a></td></tr>
 
   {% endfor %}  
 </table>

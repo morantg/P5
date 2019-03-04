@@ -24,9 +24,9 @@ class Auth{
    * @param $bd PDO
    * @param $id int 
    */
-	public function passwordUpdate($password, $db, $id){
-		$req = $db->prepare('UPDATE users SET password = ? WHERE id = ?');
-		$req->execute([$password, $id]);
+	public function passwordUpdate($password, $mysql_db, $user_id){
+		$req = $mysql_db->prepare('UPDATE users SET password = ? WHERE id = ?');
+		$req->execute([$password, $user_id]);
 	}
 
   /**
@@ -36,15 +36,15 @@ class Auth{
    * @param $password string 
    * @param $email string
    */
-	public function register($db,$username,$password,$email){
+	public function register($mysql_db,$username,$password,$email){
 		$password = $this->hashPassword($password);
 		$token = App::random(60);
 			
-		$req = $db->prepare("INSERT INTO users SET username = ?,password = ?,email = ?, confirmation_token = ?");
+		$req = $mysql_db->prepare("INSERT INTO users SET username = ?,password = ?,email = ?, confirmation_token = ?");
 		$req->execute([$username,$password, $email,$token]);
-		$user_id = $db->lastInsertId();
+		$user_id = $mysql_db->lastInsertId();
 
-		mail($email, "confirmation compte","afin de valider votre compte merci de cliquer sur ce lien\n\nlocalhost/Openclassrooms/Projet/P5/Main/index.php?action=auth.confirm&id=$user_id&token=$token");
+		mail($email, "confirmation compte","afin de valider votre compte merci de cliquer sur ce lien\n\nhttp://projet5.local/Main/index.php?action=auth.confirm&id=$user_id&token=$token");
 	}
 
   /**
@@ -54,13 +54,13 @@ class Auth{
    * @param $token string
    * @return bool
    */
-	public function confirm($db,$user_id,$token){
-		$req = $db->prepare('SELECT * FROM users WHERE id = ?');
+	public function confirm($mysql_db,$user_id,$token){
+		$req = $mysql_db->prepare('SELECT * FROM users WHERE id = ?');
 		$req->execute([$user_id]);
 		$user= $req->fetch();
 
 		if($user && $user->confirmation_token == $token){
-			$req = $db->prepare('UPDATE users SET confirmation_token = NULL,confirmed_at = NOW() WHERE id = ?');
+			$req = $mysql_db->prepare('UPDATE users SET confirmation_token = NULL,confirmed_at = NOW() WHERE id = ?');
 			$req->execute([$user_id]);
 			$this->session->write('auth',$user);
 			return true;
@@ -108,8 +108,8 @@ class Auth{
    * @param $db PDO
    * @return stdClass
    */
-	public function users($db){
-		$req = $db ->query("SELECT * from users WHERE permission != 'superadmin'");
+	public function users($mysql_db){
+		$req = $mysql_db ->query("SELECT * from users WHERE permission != 'superadmin'");
 		$users = $req->fetchAll();
 		return $users;
 	}
@@ -159,15 +159,15 @@ class Auth{
    * @param $remember bool
    * @return bool
    */
-	public function login($db,$username,$password,$remember = false){
-		$req = $db->prepare('SELECT * FROM users WHERE (username = :username OR email = :username AND confirmed_at IS NOT NULL)');
+	public function login($mysql_db,$username,$password,$remember = false){
+		$req = $mysql_db->prepare('SELECT * FROM users WHERE (username = :username OR email = :username AND confirmed_at IS NOT NULL)');
 		$req->execute(['username' => $username]);
 		$user = $req->fetch();
 
 		if(password_verify($password, $user->password)){
 			$this->connect($user);
 			if($remember){
-				$this->remember($db,$user->id);
+				$this->remember($mysql_db,$user->id);
 			}
 			return $req;
 		}
@@ -181,9 +181,9 @@ class Auth{
    * @param $id int
    * @return void
    */
-	public function changer_permission($db,$permission,$id){
+	public function changer_permission($db,$permission,$user_id){
 		$req = $db->prepare('UPDATE users SET permission = ? WHERE id = ? ');
-		$req->execute([$permission, $id]);
+		$req->execute([$permission, $user_id]);
 	}
 
   /**
@@ -192,9 +192,9 @@ class Auth{
    * @param $user_id int
    * @return void
    */
-	public function remember($db,$user_id){
+	public function remember($mysql_db,$user_id){
 		$remember_token = App::random(250);
-		$req = $db->prepare('UPDATE  users SET remember_token = ? WHERE id = ?');
+		$req = $mysql_db->prepare('UPDATE  users SET remember_token = ? WHERE id = ?');
 		$req->execute([$remember_token, $user_id]);
 		setcookie('remember', $user_id. '=='. $remember_token.sha1($user_id .'testsha'),time() + 60*60*24*7);
 	}
@@ -214,16 +214,16 @@ class Auth{
    * @param $email string
    * @return bool
    */
-	public function resetPassword($db,$email){
-		$req = $db->prepare('SELECT * FROM users WHERE email = ? AND confirmed_at IS NOT NULL');
+	public function resetPassword($mysql_db,$email){
+		$req = $mysql_db->prepare('SELECT * FROM users WHERE email = ? AND confirmed_at IS NOT NULL');
 		$req->execute([$email]);
 		$user = $req->fetch();
 		if($user){
 			$reset_token = App::random(60);
-			$req = $db->prepare('UPDATE users SET reset_token = ?, reset_at = NOW() WHERE id = ?');
+			$req = $mysql_db->prepare('UPDATE users SET reset_token = ?, reset_at = NOW() WHERE id = ?');
 			$req->execute([$reset_token,$user->id]);
 						
-			mail($email, "réinitialisation de votre mot de passe ","afin de réinitialiser votre mot de passe merci de cliquer sur ce lien\n\nlocalhost/Openclassrooms/Projet/P5/Main/index.php?action=auth.reset_password&id={$user->id}&token=$reset_token");
+			mail($email, "réinitialisation de votre mot de passe ","afin de réinitialiser votre mot de passe merci de cliquer sur ce lien\n\nhttp://projet5.local/Main/index.php?action=auth.reset_password&id={$user->id}&token=$reset_token");
 			return $user;
 		}
 		return false;
@@ -235,9 +235,9 @@ class Auth{
    * @param $id int
    * @param $db PDO
    */
-	public function confirmReset($password,$id,$db){
-		$req = $db->prepare('UPDATE users SET password = ?, reset_at = NULL, reset_token = NULL WHERE id = ?');
-		$req->execute([$password,$id]);
+	public function confirmReset($password,$user_id,$mysql_db){
+		$req = $mysql_db->prepare('UPDATE users SET password = ?, reset_at = NULL, reset_token = NULL WHERE id = ?');
+		$req->execute([$password,$user_id]);
 	}
 	
   /**
@@ -246,8 +246,8 @@ class Auth{
    * @param $token string
    * @return bool
    */
-	public function checkResetToken($db,$user_id,$token){
-		$req = $db->prepare('SELECT * FROM users WHERE id = ? AND reset_token IS NOT NULL AND reset_token = ? AND reset_at > DATE_SUB(NOW(),INTERVAL 30 MINUTE)');
+	public function checkResetToken($mysql_db,$user_id,$token){
+		$req = $mysql_db->prepare('SELECT * FROM users WHERE id = ? AND reset_token IS NOT NULL AND reset_token = ? AND reset_at > DATE_SUB(NOW(),INTERVAL 30 MINUTE)');
 		$req->execute([$user_id, $token]);
 		$ret = $req->fetch();
 		return $ret;

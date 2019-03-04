@@ -2,7 +2,6 @@
 class NewsManager
 {
   
-
   private $db;
 
   public function __construct(PDO $db)
@@ -92,6 +91,10 @@ class NewsManager
     $requete->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'News');
 
     $news = $requete->fetch();
+
+    if(!$news){
+      return $news;
+    }
   
     $news->setDateAjout(new DateTime($news->dateAjout()));
     $news->setDateModif(new DateTime($news->dateModif()));

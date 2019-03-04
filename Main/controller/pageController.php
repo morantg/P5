@@ -2,20 +2,20 @@
 
 class pageController extends Controller{
 
-	private $db;
+	private $mysql_db;
 	private $session;
 
-	public function __construct($db, $session){
-		$this->db = $db;
+	public function __construct($mysql_db, $session){
+		$this->mysql_db = $mysql_db;
 		$this->session = $session;
 	}	
 	
 	public function about(){
-		$about = new About($this->db);
+		$about = new About($this->mysql_db);
 		$contenu = $about->getAbout();
-		$about = filter_input(INPUT_POST, 'about');
-		if($about){
-			$about->editAbout($about);
+		$about_edit = filter_input(INPUT_POST,'about');
+		if($about_edit){
+			$about->editAbout($about_edit);
 			$this->session->setFlash('success','La section a propos a bien été éditée');
 			App::redirect('Edition');
 		}
@@ -50,4 +50,12 @@ class pageController extends Controller{
 			'session_instance' => $this->session
 		));
 	}
+
+	public function notFound(){
+		$this->render('404.php',array(
+			'session' => $_SESSION,
+		));
+	}
+
+
 }
