@@ -15,7 +15,8 @@ class authController extends Controller{
 		$this->auth->connectFromCookie($this->mysql_db);
 		
 		if($this->auth->user()){
-			App::redirect('MonCompte');
+			header("Location: MonCompte");
+			exit();
 		}
 		$username = filter_input(INPUT_POST, 'username');
 		$password = filter_input(INPUT_POST, 'password');
@@ -25,7 +26,8 @@ class authController extends Controller{
 		$user = $this->auth->login($this->mysql_db, $username, $password,isset($remember));
 		    if ($user){
 			$this->session->setFlash('success','Vous êtes maintenant connecté');
-			App::redirect('MonCompte');
+			header("Location: MonCompte");
+			exit();
 			}else{
 			$this->session->setFlash('danger','Identifiant ou mot de passe incorrecte');
 			}
@@ -49,7 +51,8 @@ class authController extends Controller{
 			$password_hash= password_hash($password,PASSWORD_BCRYPT);
 			$this->auth->passwordUpdate($password_hash, $this->mysql_db, $user_id );
 			$_SESSION['flash']['success'] = "mot de passe mis a jour";
-			App::redirect('MonCompte');
+			header("Location: MonCompte");
+			exit();
 	    	}
 		}
 		$this->render('accountView.php',array(
@@ -62,7 +65,8 @@ class authController extends Controller{
 	public function logout(){
 		$this->auth->logout();
 		$this->session->setFlash('success','vous êtes déconnecté');
-		App::redirect('Connection');
+		header("Location: Connection");
+			exit();
 	}
 
 	public function register(){
@@ -84,7 +88,8 @@ class authController extends Controller{
 			if($validator->isValid()){
 				$this->auth->register($this->mysql_db,$_POST['username'],$_POST['password'],$_POST['email']);
 				$this->session->setFlash('success','email de confirmation envoyé');
-				App::redirect('Connection');
+				header("Location: Connection");
+				exit();
 			}else{
 				$errors = $validator->getErrors(); 
 			}
@@ -97,10 +102,12 @@ class authController extends Controller{
 		$token = filter_input(INPUT_GET, 'token');
 		if($this->auth->confirm($this->mysql_db, $id, $token, $this->session)){
 			$this->session->setFlash('success',"compte validé");
-			App::redirect('MonCompte');
+			header("Location: MonCompte");
+			exit();
 		}else{
 			$this->session->setFlash('danger',"ce token n'est plus valide");
-			App::redirect('Connection');
+			header("Location: Connection");
+			exit();
 		}	
 	}
 
@@ -109,10 +116,12 @@ class authController extends Controller{
 		if($email){
 			if($this->auth->resetPassword($this->mysql_db,$email)){
 				$this->session->setFlash('success','les instructions du rappel de mot de passe vous ont été envoyées par emails');
-				App::redirect('Connection');
+				header("Location: Connection");
+				exit();
 			}else{
 				$this->session->setFlash('danger','pas de correspondance');
-				App::redirect('Forget');
+				header("Location: Forget");
+				exit();
 			}
 		}
 		$this->render('forgetView.php',array('session_instance' => $this->session)); 
@@ -132,15 +141,18 @@ class authController extends Controller{
 						$this->auth->confirmReset($password, $id, $this->mysql_db);
 						$this->auth->connect($user);
 						$this->session->setFlash('success',"Votre mot de passe a bien été modifié");
-						App::redirect('MonCompte');
+						header("Location: MonCompte");
+						exit();
 					}
 				}
 			}else{
 					$this->session->setFlash('danger',"ce token n'est plus valide");
-					App::redirect('Connection');
+					header("Location: Connection");
+					exit();
 				}
 		}else{
-				App::redirect('Connection');
+				header("Location: Connection");
+				exit();
 			}
 		$this->render('resetView.php');
 	}
