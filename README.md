@@ -30,3 +30,7 @@ Pour pouvoir tester aisément l'application en local je vous conseil d'utiliser 
 tester facilement tout les envois et récupération de liens.
 
 tuto maildev : https://www.grafikart.fr/tutoriels/maildev-tester-emails-595
+
+# Alalyse
+
+Analyse codacy du projet : https://app.codacy.com/project/morantg/P5/dashboard
