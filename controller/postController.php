@@ -8,7 +8,6 @@ class postController extends Controller{
 	private $auth;
 	private $session;
 
-
 	public function __construct($db, $postManager, $commentManager, $auth, $session){
 		$this->db = $db;
 		$this->postManager = $postManager;
