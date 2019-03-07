@@ -1,6 +1,6 @@
 # P5
 
-#Installation de l'application
+# Installation de l'application
 
 Commencer par créer un virtual host que vous appellerez projet5.local.
 
