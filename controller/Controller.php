@@ -1,6 +1,4 @@
 <?php
-
-
 class Controller{
 
     protected function render($view, $variables = []){
