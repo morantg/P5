@@ -1,5 +1,4 @@
 <?php
-
 class postController extends Controller{
 
 	private $mysql_db;
