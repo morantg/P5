@@ -11,19 +11,7 @@ class pageController extends Controller{
 	}	
 	
 	public function about(){
-		$about = new About($this->mysql_db);
-		$contenu = $about->getAbout();
-		$about_edit = filter_input(INPUT_POST,'about');
-		if($about_edit){
-			$about->editAbout($about_edit);
-			$this->session->setFlash('success','La section a propos a bien été éditée');
-			App::redirect('Edition');
-		}
-		
-		$this->render('aboutView.php',array(
-			'session' => $_SESSION,
-			'contenu' => $contenu
-		));
+		$this->render('aboutView.php',array('session' => $_SESSION,));
 	}
 
 	public function contact(){
@@ -37,7 +25,7 @@ class pageController extends Controller{
 			$validator->isEmpty('message',"votre message est vide");
 			
 			if($validator->isValid()){
-				mail("gmorant@gmail.com",$_POST['objet'] ,$_POST['message']);
+				mail("admin@gmail.com",$_POST['objet'] ,$_POST['message']);
 				$this->session->setFlash('success','votre message a bien été envoyé');
 				App::redirect('Contact');
 			}else{

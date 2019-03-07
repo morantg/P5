@@ -224,7 +224,7 @@ class Auth{
 			$req = $mysql_db->prepare('UPDATE users SET reset_token = ?, reset_at = NOW() WHERE id = ?');
 			$req->execute([$reset_token,$user->id]);
 						
-			mail($email, "réinitialisation de votre mot de passe ","afin de réinitialiser votre mot de passe merci de cliquer sur ce lien\n\nhttp://projet5.local/index.php?action=auth.reset_password&id={$user->id}&token=$reset_token");
+			mail($email, "changement de votre mot de passe ","afin de changer votre mot de passe merci de cliquer sur ce lien\n\nhttp://projet5.local/index.php?action=auth.reset_password&id={$user->id}&token=$reset_token");
 			return $user;
 		}
 		return false;

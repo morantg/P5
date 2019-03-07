@@ -88,7 +88,7 @@
 <h3> Liste des commentaires </h3>
 <form action="" method="POST">
   <table>
-    <tr><th>id</th><th>post_id</th><th>author</th><th>comment</th><th>publication</th></tr>
+    <tr><th>id</th><th>post_id</th><th>author</th><th>comment</th><th>publication</th><th>supression</th></tr>
 
     {% for comment in comments %}
     
@@ -96,16 +96,13 @@
       <td>
         <input type="checkbox" name="ids[]" value="{{ comment.id }}" />
       </td>
+      <td>
+        <input type="checkbox" name="delete_ids[]" value="{{ comment.id }}" />
+      </td>
      </tr>
      {% endfor %}
   </table>  
- <br><button type="submit" class="btn btn-primary">publier</button>
-</form>
-<br>
-<h3> Edition About </h3>
-<form action="index.php?action=page.about" method="POST">
-  <textarea rows="8" cols="60" class="mceEditor" name="about">Editer une nouvelle section a propos.</textarea><br />
-  <button type="submit" class="btn btn-primary">publier</button>
+ <br><button type="submit" class="btn btn-primary">valider</button>
 </form>
 
 {% endblock %}

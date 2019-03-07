@@ -67,4 +67,17 @@ class CommentManager
             $req->execute();
         }
     }
+
+  /**
+   * Méthode permettant à l'administrateur de supprimés les commentaires d'utilisateurs 
+   * @param $ids int
+   * @return void
+   */
+    public function delete_comment($ids){
+        foreach($ids as $id){
+            $req = $this->db->prepare('DELETE FROM comments WHERE id = :id');
+            $req->bindValue(':id', $id);
+            $req->execute();
+        }
+    }
 }

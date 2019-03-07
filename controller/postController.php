@@ -57,11 +57,9 @@ class postController extends Controller{
 		$modifier = filter_input(INPUT_GET, 'modifier');
 		$supprimer = filter_input(INPUT_GET, 'supprimer');
 		$permission = filter_input(INPUT_POST, 'permission');
-		$ids = filter_input(INPUT_POST, 'ids');
 		$auteur = filter_input(INPUT_POST, 'auteur');
 		$id = filter_input(INPUT_POST, 'id');
-		$session_user = $_SESSION;
-
+		
 		if ($modifier)
 		{
 	  	$news = $this->postManager->getUnique($modifier);
@@ -78,9 +76,16 @@ class postController extends Controller{
 			$this->session->setFlash('success','La nouvelle permission a bien été adoptée !');
 			App::redirect('Edition');
 		}
-		if ($ids){
-  			$this->commentManager->publication($ids);
+		if (isset($_POST['ids'])){
+			$ids = $_POST['ids'];
+			$this->commentManager->publication($ids);
 			$this->session->setFlash('success','les commentaires ont bien été publiés !');
+			App::redirect('Edition');
+		}
+		if (isset($_POST['delete_ids'])){
+			$delete_ids = $_POST['delete_ids'];
+  			$this->commentManager->delete_comment($delete_ids);
+			$this->session->setFlash('success','les commentaires ont bien été supprimés !');
 			App::redirect('Edition');
 		}
 		if ($auteur)
@@ -114,7 +119,7 @@ class postController extends Controller{
 			}
 		}
 		$this->render('adminView.php',array(
-			'session' => $session_user,
+			'session' => $_SESSION,
 			'new'    => $news,
 			'manager' => $this->postManager,
 			'session_instance' => $this->session,
@@ -125,10 +130,9 @@ class postController extends Controller{
 	}
 
 	public function addComment(){
-		$session_user = $_SESSION;
+		$news_id = filter_input(INPUT_GET, 'id');
 		if (empty($_POST['comment'])) {
 	        $this->session->setFlash('danger','commentaire vide');
-	        $news_id = filter_input(INPUT_GET, 'id');
 	        App::redirect('/News/' . $news_id);
 		}
 		$author = filter_input(INPUT_POST, 'author');
@@ -140,6 +144,6 @@ class postController extends Controller{
 	    	$this->session->setFlash('success','votre message a été soumis a la publication');
 	    	App::redirect('/News/' . $news_id);
 		}
-		$this->render('PostView.php',array('session' => $session_user));
+		$this->render('PostView.php',array('session' => $_SESSION));
 	}
 }

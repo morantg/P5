@@ -139,7 +139,7 @@
 
     <!-- Custom scripts for this template -->
     <script src="/js/clean-blog.min.js"></script>
-    <script src="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=expsirpgv36h6sccv64i0qrvz1cvboujrff5y5okhma2g5oz"></script>
+    <script src="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=pk1okg92xbl4ryit35pzoygyhrvm2dsq9aqvcfitrmnkvbyn"></script>
     <script>tinymce.init({ 
       mode : "specific_textareas",
       editor_selector : "mceEditor",
