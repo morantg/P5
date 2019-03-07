@@ -2,14 +2,14 @@
 
 class postController extends Controller{
 
-	private $db;
+	private $mysql_db;
 	private $postManager;
 	private $commentManager;
 	private $auth;
 	private $session;
 
-	public function __construct($db, $postManager, $commentManager, $auth, $session){
-		$this->db = $db;
+	public function __construct($mysql_db, $postManager, $commentManager, $auth, $session){
+		$this->mysql_db = $mysql_db;
 		$this->postManager = $postManager;
 		$this->commentManager = $commentManager;
 		$this->auth = $auth;
@@ -48,9 +48,9 @@ class postController extends Controller{
 		$news = null;
 		$erreurs = null;
 		$this->auth->restrict();
-		$this->auth->restrict_admin($this->db);
+		$this->auth->restrict_admin($this->mysql_db);
 		
-		$users = $this->auth->users($this->db);
+		$users = $this->auth->users($this->mysql_db);
 		$comments = $this->commentManager->allCommentsUnpublished();
 		
 		$modifier = filter_input(INPUT_GET, 'modifier');

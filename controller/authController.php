@@ -43,12 +43,12 @@ class authController extends Controller{
 	    
 		if(!empty($_POST)){
 			if(empty($password) || $password != $password_confirm){
-				$_SESSION['flash']['danger'] = "les mots de passe ne corresponde pas";
+				$this->session->setFlash('danger','les mots de passe ne corresponde pas');
 		}else{
 			$user_id = $_SESSION['auth']->id;
 			$password_hash= password_hash($password,PASSWORD_BCRYPT);
 			$this->auth->passwordUpdate($password_hash, $this->mysql_db, $user_id );
-			$_SESSION['flash']['success'] = "mot de passe mis a jour";
+			$this->session->setFlash('success','mot de passe mis a jour');
 			App::redirect('MonCompte');
 	    	}
 		}
@@ -128,7 +128,7 @@ class authController extends Controller{
 					$validator->isConfirmed('password');
 					if($validator->isValid()){
 						$password = $this->auth->hashPassword($_POST['password']);
-						$this->auth->confirmReset($password, $id, $this->mysql_db);
+						$this->auth->confirmReset($password, $user_id, $this->mysql_db);
 						$this->auth->connect($user);
 						$this->session->setFlash('success',"Votre mot de passe a bien été modifié");
 						App::redirect('MonCompte');
