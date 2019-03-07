@@ -2,9 +2,9 @@
 
 # Installation de l'application
 
-Commencer par créer un virtual host que vous appellerez projet5.local.
+Commencer par créer un virtual host que vous appellerez projet5.local
 
-Télécharger et mettez y tous le fichiers du repository.
+Télécharger et mettez y tous les fichiers du repository.
 
 Attention si vous voulez utiliser un autre nom que projet5.local pour votre virtual
 host veuillez changer les 2 liens qui ce trouve dans la classe Auth dans le fichier
