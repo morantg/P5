@@ -28,16 +28,4 @@ class App{
 		$alphabet = "012345678azertyuiopqsdfghjklmwxcvbnAZERTYUIOPQSDFGHJKLMWXCVBN";
 		return substr(str_shuffle(str_repeat($alphabet,$length )),0,$length);
 	}
-
-  /**
-   * Méthode pour utiliser le moteur de templates twig
-   * @return Twig_Environment
-   */
-	static function get_twig(){
-		$loader = new Twig_Loader_Filesystem('view');
-		$twig = new Twig_Environment($loader,[
-    		'cache' => false,//__DIR__ . '/tmp'
-	]);
-		return $twig;
-	}
 }

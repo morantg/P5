@@ -55,7 +55,6 @@ class authController extends Controller{
 		$this->render('accountView.php',array(
 			'session' => $_SESSION,
 			'session_instance' => $this->session
-			
 		));
 	}
 
