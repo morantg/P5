@@ -20,8 +20,6 @@
     <hr>
 {% endfor %}
     
-    
-
 {% endblock %}
 
 

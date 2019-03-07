@@ -1,7 +1,6 @@
 <?php
 class CommentManager 
 {
-    
     private $db;
 
     public function __construct(PDO $db)
