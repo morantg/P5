@@ -70,7 +70,7 @@ class postController extends Controller{
 		}
 		if ($permission){
 			$id = filter_input(INPUT_POST, 'id');
-			$this->auth->changer_permission($this->db, $permission, $id);
+			$this->auth->changer_permission($this->mysql_db, $permission, $id);
 			$this->session->setFlash('success','La nouvelle permission a bien été adoptée !');
 			App::redirect('Edition');
 		}
