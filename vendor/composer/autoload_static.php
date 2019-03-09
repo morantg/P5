@@ -19,6 +19,10 @@ class ComposerStaticInit682eb3beeb536b6c72aeb68dfce27aff
         array (
             'Symfony\\Polyfill\\Ctype\\' => 23,
         ),
+        'P' => 
+        array (
+            'PSR2R\\' => 6,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -29,6 +33,10 @@ class ComposerStaticInit682eb3beeb536b6c72aeb68dfce27aff
         'Symfony\\Polyfill\\Ctype\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
+        ),
+        'PSR2R\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/fig-r/psr2r-sniffer/PSR2R',
         ),
     );
 

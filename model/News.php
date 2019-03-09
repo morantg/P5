@@ -1,20 +1,24 @@
 <?php
+namespace model;
+
+use \DateTime;
+
 class News
 {
-  protected $erreurs = [],
-            $id,
-            $auteur,
-            $titre,
-            $contenu,
-            $dateAjout,
-            $dateModif;
+    protected $erreurs = [];
+    protected $id;
+    protected $auteur;
+    protected $titre;
+    protected $contenu;
+    protected $dateAjout;
+    protected $dateModif;
   
   /**
    * Constantes relatives aux erreurs possibles rencontrées lors de l'exécution de la méthode.
    */
-  const AUTEUR_INVALIDE = 1;
-  const TITRE_INVALIDE = 2;
-  const CONTENU_INVALIDE = 3;
+    const AUTEUR_INVALIDE = 1;
+    const TITRE_INVALIDE = 2;
+    const CONTENU_INVALIDE = 3;
   
   
   /**
@@ -22,144 +26,133 @@ class News
    * @param $valeurs array Les valeurs à assigner
    * @return void
    */
-  public function __construct($valeurs = [])
-  {
-    if (!empty($valeurs)) // Si on a spécifié des valeurs, alors on hydrate l'objet.
+    public function __construct($valeurs = [])
     {
-      $this->hydrate($valeurs);
+        if (!empty($valeurs)) { // Si on a spécifié des valeurs, alors on hydrate l'objet.
+            $this->hydrate($valeurs);
+        }
     }
-  }
   
   /**
    * Méthode assignant les valeurs spécifiées aux attributs correspondant.
    * @param $donnees array Les données à assigner
    * @return void
    */
-  public function hydrate($donnees)
-  {
-    foreach ($donnees as $attribut => $valeur)
+    public function hydrate($donnees)
     {
-      $methode = 'set'.ucfirst($attribut);
+        foreach ($donnees as $attribut => $valeur) {
+            $methode = 'set'.ucfirst($attribut);
       
-      if (is_callable([$this, $methode]))
-      {
-        $this->$methode($valeur);
-      }
+            if (is_callable([$this, $methode])) {
+                $this->$methode($valeur);
+            }
+        }
     }
-  }
   
   /**
    * Méthode permettant de savoir si la news est nouvelle.
    * @return bool
    */
-  public function isNew()
-  {
-    return empty($this->id);
-  }
+    public function isNew()
+    {
+        return empty($this->id);
+    }
   
   /**
    * Méthode permettant de savoir si la news est valide.
    * @return bool
    */
-  public function isValid()
-  {
-    return !(empty($this->auteur) || empty($this->titre) || empty($this->contenu));
-  }
+    public function isValid()
+    {
+        return !(empty($this->auteur) || empty($this->titre) || empty($this->contenu));
+    }
 
 
-  public function getExtrait(){
-    $html = substr($this->contenu, 0,200) . '...';
-    return $html;
-  }
+    public function getExtrait()
+    {
+        $html = substr($this->contenu, 0, 200) . '...';
+        return $html;
+    }
   
   
   // SETTERS //
   
-  public function setId($id)
-  {
-    $this->id = (int) $id;
-  }
+    public function setId($id)
+    {
+        $this->id = (int) $id;
+    }
   
-  public function setAuteur($auteur)
-  {
-    if (!is_string($auteur) || empty($auteur))
+    public function setAuteur($auteur)
     {
-      $this->erreurs[self::AUTEUR_INVALIDE] = 'attention auteur invalide !';
+        if (!is_string($auteur) || empty($auteur)) {
+            $this->erreurs[self::AUTEUR_INVALIDE] = 'attention auteur invalide !';
+        } else {
+            $this->auteur = $auteur;
+        }
     }
-    else
-    {
-      $this->auteur = $auteur;
-    }
-  }
   
-  public function setTitre($titre)
-  {
-    if (!is_string($titre) || empty($titre))
+    public function setTitre($titre)
     {
-      $this->erreurs[self::TITRE_INVALIDE] = 'attention titre invalide !';
+        if (!is_string($titre) || empty($titre)) {
+            $this->erreurs[self::TITRE_INVALIDE] = 'attention titre invalide !';
+        } else {
+            $this->titre = $titre;
+        }
     }
-    else
-    {
-      $this->titre = $titre;
-    }
-  }
   
-  public function setContenu($contenu)
-  {
-    if (!is_string($contenu) || empty($contenu))
+    public function setContenu($contenu)
     {
-      $this->erreurs[self::CONTENU_INVALIDE] = 'attention contenu invalide !';
+        if (!is_string($contenu) || empty($contenu)) {
+            $this->erreurs[self::CONTENU_INVALIDE] = 'attention contenu invalide !';
+        } else {
+            $this->contenu = $contenu;
+        }
     }
-    else
+  
+    public function setDateAjout(DateTime $dateAjout)
     {
-      $this->contenu = $contenu;
+        $this->dateAjout = $dateAjout;
     }
-  }
   
-  public function setDateAjout(DateTime $dateAjout)
-  {
-    $this->dateAjout = $dateAjout;
-  }
-  
-  public function setDateModif(DateTime $dateModif)
-  {
-    $this->dateModif = $dateModif;
-  }
+    public function setDateModif(DateTime $dateModif)
+    {
+        $this->dateModif = $dateModif;
+    }
   
   // GETTERS //
   
-  public function erreurs()
-  {
-    return $this->erreurs;
-  }
+    public function erreurs()
+    {
+        return $this->erreurs;
+    }
   
-  public function id()
-  {
-    return $this->id;
-  }
+    public function id()
+    {
+        return $this->id;
+    }
   
-  public function auteur()
-  {
-    return $this->auteur;
-  }
+    public function auteur()
+    {
+        return $this->auteur;
+    }
   
-  public function titre()
-  {
-    return $this->titre;
-  }
+    public function titre()
+    {
+        return $this->titre;
+    }
   
-  public function contenu()
-  {
-    return $this->contenu;
-  }
+    public function contenu()
+    {
+        return $this->contenu;
+    }
   
-  public function dateAjout()
-  {
-    return $this->dateAjout;
-  }
+    public function dateAjout()
+    {
+        return $this->dateAjout;
+    }
   
-  public function dateModif()
-  {
-    return $this->dateModif;
-  }
+    public function dateModif()
+    {
+        return $this->dateModif;
+    }
 }

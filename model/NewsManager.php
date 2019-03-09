@@ -1,48 +1,54 @@
 <?php
+namespace model;
+
+use \PDO;
+use \DateTime;
+
 class NewsManager
 {
   
-  private $db;
+    private $db;
 
-  public function __construct(PDO $db)
-  {
-    $this->db = $db;
-  }
+    public function __construct(PDO $db)
+    {
+        $this->db = $db;
+    }
 
  /**
    * Méthode permettant d'ajouter une news.
    * @param $news News La news à ajouter
    * @return void
    */
-  public function add(News $news)
-  {
-    $requete = $this->db->prepare('INSERT INTO news(auteur, titre, contenu, dateAjout, dateModif) VALUES(:auteur, :titre, :contenu, NOW(), NOW())');
+    public function add(News $news)
+    {
+        $requete = $this->db->prepare('
+          INSERT INTO news(auteur, titre, contenu, dateAjout, dateModif) 
+          VALUES(:auteur, :titre, :contenu, NOW(), NOW())');
+        $requete->bindValue(':titre', $news->titre());
+        $requete->bindValue(':auteur', $news->auteur());
+        $requete->bindValue(':contenu', $news->contenu());
     
-    $requete->bindValue(':titre', $news->titre());
-    $requete->bindValue(':auteur', $news->auteur());
-    $requete->bindValue(':contenu', $news->contenu());
-    
-    $requete->execute();
-  }
+        $requete->execute();
+    }
   
   /**
    * Méthode renvoyant le nombre de news total.
    * @return int
    */
-  public function count()
-  {
-    return $this->db->query('SELECT COUNT(*) FROM news')->fetchColumn();
-  }
+    public function count()
+    {
+        return $this->db->query('SELECT COUNT(*) FROM news')->fetchColumn();
+    }
   
   /**
    * Méthode permettant de supprimer une news.
    * @param $id int L'identifiant de la news à supprimer
    * @return void
    */
-  public function delete($id)
-  {
-    $this->db->exec('DELETE FROM news WHERE id = '.(int) $id);
-  }
+    public function delete($id)
+    {
+        $this->db->exec('DELETE FROM news WHERE id = '.(int) $id);
+    }
   
   /**
    * Méthode retournant une liste de news demandée.
@@ -50,57 +56,61 @@ class NewsManager
    * @param $limite int Le nombre de news à sélectionner
    * @return array La liste des news. Chaque entrée est une instance de News.
    */
-  public function getList($debut = -1, $limite = -1)
-  {
-    $sql = 'SELECT id, auteur, titre, contenu, dateAjout, dateModif FROM news ORDER BY id DESC';
-    
-    // On vérifie l'intégrité des paramètres fournis.
-    if ($debut != -1 || $limite != -1)
+    public function getList($debut = -1, $limite = -1)
     {
-      $sql .= ' LIMIT '.(int) $limite.' OFFSET '.(int) $debut;
-    }
+        $sql = 'SELECT id, auteur, titre, contenu, dateAjout, dateModif FROM news ORDER BY id DESC';
     
-    $requete = $this->db->query($sql);
-    $requete->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'News');
+      // On vérifie l'intégrité des paramètres fournis.
+        if ($debut != -1 || $limite != -1) {
+            $sql .= ' LIMIT '.(int) $limite.' OFFSET '.(int) $debut;
+        }
     
-    $listeNews = $requete->fetchAll();
+        $requete = $this->db->query($sql);
+        $requete->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'model\News');
+    
+        $listeNews = $requete->fetchAll();
 
-    // On parcourt notre liste de news pour pouvoir placer des instances de DateTime en guise de dates d'ajout et de modification.
-    foreach ($listeNews as $news)
-    {
-      $news->setDateAjout(new DateTime($news->dateAjout()));
-      $news->setDateModif(new DateTime($news->dateModif()));
+      
+
+      // On parcourt notre liste de news pour pouvoir placer des instances de
+      // DateTime en guise de dates d'ajout et de modification.
+        foreach ($listeNews as $news) {
+            $news->setDateAjout(new DateTime($news->dateAjout()));
+            $news->setDateModif(new DateTime($news->dateModif()));
+        }
+    
+        $requete->closeCursor();
+    
+        return $listeNews;
     }
-    
-    $requete->closeCursor();
-    
-    return $listeNews;
-  }
   
   /**
    * Méthode retournant une news précise.
    * @param $id int L'identifiant de la news à récupérer
    * @return News La news demandée
    */
-  public function getUnique($id)
-  {
-    $requete = $this->db->prepare('SELECT id, auteur, titre, contenu, dateAjout, dateModif FROM news WHERE id = :id');
-    $requete->bindValue(':id', (int) $id, PDO::PARAM_INT);
-    $requete->execute();
+    public function getUnique($id)
+    {
+        $requete = $this->db->prepare('
+          SELECT id, auteur, titre, contenu, dateAjout, dateModif 
+          FROM news 
+          WHERE id = :id');
+        $requete->bindValue(':id', (int) $id, PDO::PARAM_INT);
+        $requete->execute();
     
-    $requete->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'News');
+        $requete->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, 'model\News');
 
-    $news = $requete->fetch();
+        $news = $requete->fetch();
 
-    if(!$news){
-      return $news;
-    }
+        if (!$news) {
+            return $news;
+        }
   
-    $news->setDateAjout(new DateTime($news->dateAjout()));
-    $news->setDateModif(new DateTime($news->dateModif()));
+        $news->setDateAjout(new DateTime($news->dateAjout()));
+        $news->setDateModif(new DateTime($news->dateModif()));
     
-    return $news;
-  }
+        return $news;
+    }
   
   /**
    * Méthode permettant d'enregistrer une news.
@@ -109,32 +119,31 @@ class NewsManager
    * @see self::modify()
    * @return void
    */
-  public function save(News $news)
-  {
-    if ($news->isValid())
+    public function save(News $news)
     {
-      $news->isNew() ? $this->add($news) : $this->update($news);
+        if ($news->isValid()) {
+            $news->isNew() ? $this->add($news) : $this->update($news);
+        } else {
+            throw new RuntimeException('La news doit être valide pour être enregistrée');
+        }
     }
-    else
-    {
-      throw new RuntimeException('La news doit être valide pour être enregistrée');
-    }
-  }
   
   /**
    * Méthode permettant de modifier une news.
    * @param $news news la news à modifier
    * @return void
    */
-   public function update(News $news)
-  {
-    $requete = $this->db->prepare('UPDATE news SET auteur = :auteur, titre = :titre, contenu = :contenu, dateModif = NOW() WHERE id = :id');
+    public function update(News $news)
+    {
+        $requete = $this->db->prepare('
+          UPDATE news 
+          SET auteur = :auteur, titre = :titre, contenu = :contenu, dateModif = NOW() 
+          WHERE id = :id');
+        $requete->bindValue(':titre', $news->titre());
+        $requete->bindValue(':auteur', $news->auteur());
+        $requete->bindValue(':contenu', $news->contenu());
+        $requete->bindValue(':id', $news->id(), PDO::PARAM_INT);
     
-    $requete->bindValue(':titre', $news->titre());
-    $requete->bindValue(':auteur', $news->auteur());
-    $requete->bindValue(':contenu', $news->contenu());
-    $requete->bindValue(':id', $news->id(), PDO::PARAM_INT);
-    
-    $requete->execute();
-  }
+        $requete->execute();
+    }
 }

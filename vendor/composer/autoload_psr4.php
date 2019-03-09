@@ -8,4 +8,5 @@ $baseDir = dirname($vendorDir);
 return array(
     'Twig\\' => array($vendorDir . '/twig/twig/src'),
     'Symfony\\Polyfill\\Ctype\\' => array($vendorDir . '/symfony/polyfill-ctype'),
+    'PSR2R\\' => array($vendorDir . '/fig-r/psr2r-sniffer/PSR2R'),
 );

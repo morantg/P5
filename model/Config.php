@@ -1,17 +1,19 @@
 <?php
 
+namespace model;
+
 class Config
 {
 
     private $settings = [];
-    private static $_instance;
+    private static $instance;
 
     public static function getInstance($file)
     {
-        if (is_null(self::$_instance)) {
-            self::$_instance = new Config($file);
+        if (is_null(self::$instance)) {
+            self::$instance = new Config($file);
         }
-        return self::$_instance;
+        return self::$instance;
     }
 
     public function __construct($file)
@@ -26,5 +28,4 @@ class Config
         }
         return $this->settings[$key];
     }
-
 }
